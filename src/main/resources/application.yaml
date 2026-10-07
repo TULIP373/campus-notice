@@ -1,3 +1,24 @@
 spring:
   application:
     name: campus-notice
+  config:
+    import:
+      - optional:file:.runtime/database.properties
+      - optional:file:.runtime/security.properties
+  datasource:
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3307/campus_notice?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai}
+    username: ${DB_USER:notice_dev}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      # SQL 必须主动执行，避免启动程序时误改已有数据库。
+      mode: never
+
+server:
+  address: 127.0.0.1
+  port: 8080
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
