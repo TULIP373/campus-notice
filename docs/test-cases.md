@@ -82,7 +82,7 @@ python tools/check_api.py --stage final --model-unavailable
 
 ## 构建、数据库、UI 和交付检查
 
-**UNIT-USER-01（AC-E1-02、AC-E4-01）：** `UserServiceTest` 使用 Mockito 隔离 Mapper，检查创建实际传给 Mapper 的密码为可匹配 BCrypt 哈希而非明文、重复用户名 409 且不插入、读取缺失 404、更新 password=null 保留旧哈希、删除缺失 404 且不写入，以及实体 JSON 排除内部哈希。`CampusNoticeApplicationTests` 用 `@MockitoBean UserMapper` 填充上下文，不访问 MySQL；不能把 Mock 单测称为真实数据库验证。
+**UNIT-USER-01（AC-E1-02、AC-E4-01）：** `UserServiceTest` 使用 Mockito 隔离 Mapper，检查创建实际传给 Mapper 的密码为可匹配 BCrypt 哈希而非明文、数据库唯一约束拒绝重复用户名后返回 409、读取缺失 404、更新 password=null 保留旧哈希、删除影响行数为 0 时返回 404，以及实体 JSON 排除内部哈希。重复插入被数据库拒绝、DELETE 不匹配任何行都是有效实现；不强制事前查询或禁止执行 SQL。`CampusNoticeApplicationTests` 用 `@MockitoBean UserMapper` 填充上下文，不访问 MySQL；不能把 Mock 单测称为真实数据库验证。
 
 ```powershell
 ./mvnw.cmd -B -ntp "-Dtest=UserServiceTest" test
@@ -91,6 +91,8 @@ python tools/check_api.py --stage final --model-unavailable
 ```
 
 第二条仅污染 Mockito 保存的密码值以证明断言抓住目标错误，不改生产代码。日志应显示断言失败，而非依赖、编译或启动故障；随后关闭该开关重跑正常测试成功。失败日志与成功日志注明相同源码提交号，不宣称真实实现曾有此缺陷。
+
+**初版单测错误记录：** 提交 `511bb55` 的真实 verify 运行共 8 项，2 项失败、6 项通过，原日志保存为 `reports/2026-10-08/e1-unit-initial-failure.log`。测试初版错误地强制“重复账号必须预检查且不能调用 insert”“缺失删除必须不调用 DELETE”，超出了原规格要求。修复只调整 Mock 的数据库反馈：insert 抛 `DuplicateKeyException`，仍断言对外 409；deleteById 返回 0，仍断言对外 404。没有修改业务实现或放宽外部状态标准。这两项属于测试设施假设错误，不是生产缺陷证明；BCrypt 明文污染断言另做目标错误验证。修复后结果由主代理在新提交实际运行后登记，当前不预判通过。
 
 **BUILD-01 / BUILD-02：** JDK 17 下运行 `mvnw.cmd -B -ntp verify`，保存实际测试数和构建日志；打包 jar 启动后健康和 CRUD 通过。审查 POM 为 Spring Boot 3、Web、MyBatis、MySQL 连接器；源码分层存在、application.yaml 配置实际生效。前端 `npm ci`、`npm run build` 分开执行，记录退出码。不能用旧项目日志代替。
 

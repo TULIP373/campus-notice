@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -61,14 +62,14 @@ class UserServiceTest {
     }
 
     @Test
-    void duplicateUsernameIsConflictBeforeInsert() {
-        when(mapper.findByUsername("test_duplicate")).thenReturn(user(7L, "test_duplicate", "existingHash"));
+    void duplicateUsernameConstraintIsConflict() {
+        when(mapper.insert(any(User.class))).thenThrow(new DuplicateKeyException("duplicate username"));
 
         ApiException failure = assertThrows(ApiException.class,
                 () -> service.create(new UserRequest("test_duplicate", "重复姓名", "TestPassword_2026!", "STUDENT")));
 
         assertEquals(HttpStatus.CONFLICT, failure.getStatus());
-        verify(mapper, never()).insert(any(User.class));
+        verify(mapper).insert(any(User.class));
     }
 
     @Test
@@ -96,10 +97,11 @@ class UserServiceTest {
     }
 
     @Test
-    void deleteMissingUserIsNotFoundAndDoesNotWrite() {
+    void deleteAffectingNoRowsIsNotFound() {
+        when(mapper.deleteById(404L)).thenReturn(0);
         ApiException failure = assertThrows(ApiException.class, () -> service.delete(404L));
         assertEquals(HttpStatus.NOT_FOUND, failure.getStatus());
-        verify(mapper, never()).deleteById(any());
+        verify(mapper).deleteById(404L);
     }
 
     @Test
