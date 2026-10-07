@@ -93,7 +93,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserRequest"
+                "$ref": "#/components/schemas/UserCreateRequest"
               }
             }
           }
@@ -714,7 +714,8 @@
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "example": "2026-11-18T18:00:00",
+            "description": "服务器本地日期时间"
           }
         }
       },
@@ -792,9 +793,9 @@
           },
           "deadline": {
             "type": "string",
-            "format": "date-time",
             "nullable": true,
-            "description": "本地日期时间，无时区；空表示待老师通知"
+            "description": "无时区本地日期时间，yyyy-MM-ddTHH:mm:ss；截止时间空表示待确认",
+            "example": "2026-11-18T18:00:00"
           },
           "source": {
             "type": "string"
@@ -808,7 +809,8 @@
           },
           "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "example": "2026-11-18T18:00:00",
+            "description": "服务器本地日期时间"
           }
         }
       },
@@ -846,8 +848,9 @@
           },
           "deadline": {
             "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "nullable": true,
+            "example": "2026-11-18T18:00:00",
+            "description": "无时区本地日期时间，yyyy-MM-ddTHH:mm:ss；截止时间空表示待确认"
           },
           "source": {
             "type": "string",
@@ -859,6 +862,39 @@
               "NOTICE",
               "MATERIAL"
             ]
+          }
+        }
+      },
+      "UserCreateRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "name",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "maxLength": 50,
+            "pattern": "^[A-Za-z0-9_]+$"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 72,
+            "writeOnly": true,
+            "description": "创建必填至少8字符；更新省略或空白保留；UTF8最多72字节"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "STUDENT",
+              "TEACHER"
+            ],
+            "default": "STUDENT"
           }
         }
       }

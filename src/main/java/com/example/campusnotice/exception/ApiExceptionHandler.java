@@ -12,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /** 浏览器始终收到 message 字段，数据库细节不放进 HTTP 响应。 */
 @RestControllerAdvice
@@ -39,6 +40,11 @@ public class ApiExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> method(HttpRequestMethodNotSupportedException exception) {
         return error(HttpStatus.METHOD_NOT_ALLOWED, "不支持该请求方法");
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Map<String, String>> missingRoute(NoResourceFoundException exception) {
+        return error(HttpStatus.NOT_FOUND, "接口不存在");
     }
 
     @ExceptionHandler(Exception.class)
