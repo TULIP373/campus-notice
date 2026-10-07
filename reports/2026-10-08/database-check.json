@@ -1,0 +1,10 @@
+{
+  "verified_commit": "ad33a471cf792f09d6200d60c2a274b28fe6dd82",
+  "timestamp": "2026-10-08T07:41:57.505830+08:00",
+  "mysql_result": [
+    "8.4.8\tcampus_notice\tnotice_dev@127.0.0.1",
+    "1"
+  ],
+  "password_output": false,
+  "stage": "实验一真实MySQL建表"
+}
