@@ -14,3 +14,5 @@
 
 | teacher-steps.md | 老师步骤与中文提交顺序 |
 | model-access.md | 模型接入方式与官方依据 |
+
+| report-template.md | 报告原模板结构与填写规则 |
