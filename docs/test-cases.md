@@ -82,6 +82,16 @@ python tools/check_api.py --stage final --model-unavailable
 
 ## 构建、数据库、UI 和交付检查
 
+**UNIT-USER-01（AC-E1-02、AC-E4-01）：** `UserServiceTest` 使用 Mockito 隔离 Mapper，检查创建实际传给 Mapper 的密码为可匹配 BCrypt 哈希而非明文、重复用户名 409 且不插入、读取缺失 404、更新 password=null 保留旧哈希、删除缺失 404 且不写入，以及实体 JSON 排除内部哈希。`CampusNoticeApplicationTests` 用 `@MockitoBean UserMapper` 填充上下文，不访问 MySQL；不能把 Mock 单测称为真实数据库验证。
+
+```powershell
+./mvnw.cmd -B -ntp "-Dtest=UserServiceTest" test
+# 主代理在测试和实现提交后运行，以下应故意失败在“不得为明文密码”断言：
+./mvnw.cmd -B -ntp "-Dtest=UserServiceTest#createStoresMatchingBcryptInsteadOfPlaintext" "-Dtest.guard.plaintext=true" test
+```
+
+第二条仅污染 Mockito 保存的密码值以证明断言抓住目标错误，不改生产代码。日志应显示断言失败，而非依赖、编译或启动故障；随后关闭该开关重跑正常测试成功。失败日志与成功日志注明相同源码提交号，不宣称真实实现曾有此缺陷。
+
 **BUILD-01 / BUILD-02：** JDK 17 下运行 `mvnw.cmd -B -ntp verify`，保存实际测试数和构建日志；打包 jar 启动后健康和 CRUD 通过。审查 POM 为 Spring Boot 3、Web、MyBatis、MySQL 连接器；源码分层存在、application.yaml 配置实际生效。前端 `npm ci`、`npm run build` 分开执行，记录退出码。不能用旧项目日志代替。
 
 **DB-01 / SEC-DB-01：** 使用本项目 MySQL CLI 和私有凭据文件查询当前数据库名、版本、连接用户，验证测试账户写入确有 SQL 行且重启保存；检查用户/角色/权限和关联表、教师/学生映射存在。只报告密码哈希的算法/前缀与数量，不输出完整哈希或原密码。比对用户名不重复、BCrypt 存储而不是明文；从 Mapper 检查参数绑定，不能仅凭表名存在认为 RBAC 生效。逐项列出用户/通知维护方法的 `@PreAuthorize`、启用方法安全的配置，以及认证加载用户角色/权限关联数据并进入授权检查的实际链路；与 STUDENT-WRITE-01 的 403 对照。检查签发期限配置及 LOGIN-01 中真实 exp，不能用过期自签令牌单独证明服务签发了有限期令牌。
