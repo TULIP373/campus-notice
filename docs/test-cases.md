@@ -82,6 +82,8 @@ python tools/check_api.py --stage final --model-unavailable
 
 ## 构建、数据库、UI 和交付检查
 
+**UNIT-SECURITY-01（AC-E4-01）：** 独立 JWT/登录单测只调用应用实际公开配置或服务入口，不能构造一套与应用无关的编码器后称为生产安全通过。针对同一 HS256 配置，正常签发应能解码；用错误密钥生成令牌必须被拒绝；签名正确但已过期的令牌必须被拒绝；实际签发令牌必须存在有限期 exp。Mockito 隔离用户/角色/权限读取，BCrypt 正确密码成功，错误密码和不存在账号均 401，不泄露原密码或哈希；教师和学生权限来自数据库关联查询，不能仅证明 JWT 包含文字角色。完整方法权限仍用 AUTH-01/STUDENT-WRITE-01 真 HTTP 状态复核。具体命令和测试类在公开接口确定后补充，尚未执行。
+
 **UNIT-NOTICE-01（AC-E2-01、AC-E2-02）：** 独立 `NoticeServiceTest` 六项业务边界：未选择课程 400/不存在课程 404、非法类型 400、空白标题 400、超过 200 字搜索关键词 400、学习资料截止时间为 null 可正常保存读取、DELETE 影响零行返回 404。不强制 DELETE 之前先查询。Mock 只隔离数据库，真实 CourseService 参与课程校验；上下文测试用 `@MockitoBean CourseMapper/NoticeMapper` 提供依赖，仍不访问 MySQL。执行 `./mvnw.cmd -B -ntp "-Dtest=NoticeServiceTest" test`，提交后保留输出；接口、真实数据库、Axios 和浏览器截图仍需另验。
 
 **UNIT-USER-01（AC-E1-02、AC-E4-01）：** `UserServiceTest` 使用 Mockito 隔离 Mapper，检查创建实际传给 Mapper 的密码为可匹配 BCrypt 哈希而非明文、数据库唯一约束拒绝重复用户名后返回 409、读取缺失 404、更新 password=null 保留旧哈希、删除影响行数为 0 时返回 404，以及实体 JSON 排除内部哈希。重复插入被数据库拒绝、DELETE 不匹配任何行都是有效实现；不强制事前查询或禁止执行 SQL。`CampusNoticeApplicationTests` 用 `@MockitoBean UserMapper` 填充上下文，不访问 MySQL；不能把 Mock 单测称为真实数据库验证。
