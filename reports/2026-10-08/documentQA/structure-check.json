@@ -1,7 +1,7 @@
 {
   "template_source": "docs\\report-template.docx",
   "template_sha256": "8b88124b5d66f0039b9d19deb07a22ca463b54fd284834de3a7fcafd18dd5483",
-  "report_sha256": "ed5c50eef8e9388936596bb09a4ca0723daa18c33e32ce70b127e433872237c0",
+  "report_sha256": "e248d9ccc753b0c99e0f975228b9e3ceb79c3b9d6bfa17ee34b7e52312d0b278",
   "template_unchanged": true,
   "preserve_only_parts": [
     "_rels/.rels",
@@ -35,6 +35,7 @@
     "身份填写",
     "五实验正文及真实截图",
     "目录真实页码",
-    "PAGE页脚与打开时更新字段"
+    "PAGE页脚与打开时更新字段",
+    "按用户2026-10-08要求精修标题层级、正文、表格图注和每实验起页"
   ]
 }

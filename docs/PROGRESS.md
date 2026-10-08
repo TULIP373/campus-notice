@@ -57,3 +57,4 @@
 - 解包构建：修订300项ZIP实际解包，JDK17 verify40项零失败/错误，npm ci和生产构建通过；终版源码、生成器和DOCX与该构建包保持逐字节一致。
 - 辅助核对踩坑：Windows Python默认GBK解码Git UTF-8及Git默认路径转义造成临时证据脚本断言错误；显式UTF-8和core.quotepath=false后核对通过，未更改源码或验收标准。
 - 收尾证据：harness-final.log、final-version-binding.json、resume-archive-build-check.json及archive-check.json；终版ZIP包括独立复核和最终验收报告，只有自引用archive-check.json不入包。最终提交后再运行final并核对工作区干净。
+- 2026-10-08用户要求精修报告字体与标题；已按保留课程封面/页面几何、优化正文层级和排版的原则执行，DOC/PKG先恢复UNVERIFIED；业务源码不变，待逐页视觉及独立复核后更新证据版本。

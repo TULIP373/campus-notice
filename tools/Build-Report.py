@@ -14,7 +14,9 @@ import textwrap
 import zipfile
 
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_TAB_ALIGNMENT, WD_TAB_LEADER
+from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT
+from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
@@ -30,8 +32,8 @@ JAVA = 'src/main/java/com/example/campusnotice/'
 TITLES = ['实验一 后端分层与用户管理', '实验二 前后端分离与课程通知',
           '实验三 Git协作与构建检查', '实验四 登录认证与角色权限',
           '实验五 课程资料检索与模型问答']
-SECTIONS = ['项目介绍', '相关开发技术', '项目设计（概要设计、详细设计、数据库设计）',
-            '关键代码', '运行结果', '心得（使用 AI 情况）']
+SECTIONS = ['项目介绍', '相关开发技术', '项目设计',
+            '关键代码', '运行结果', '心得与 AI 使用情况']
 
 
 def digest(path):
@@ -71,6 +73,12 @@ class Builder:
             title_style = self.doc.styles.add_style('Title', WD_STYLE_TYPE.PARAGRAPH)
             title_style.base_style = self.doc.styles['Normal']
         self.doc.paragraphs[4].style = self.doc.styles['Title']
+        topic=self.doc.paragraphs[5]; topic.clear()
+        topic.alignment=WD_ALIGN_PARAGRAPH.CENTER
+        self.font(topic.add_run('课程通知平台').font,16)
+        course=self.doc.paragraphs[9]; course.clear()
+        course.alignment=WD_ALIGN_PARAGRAPH.CENTER
+        self.font(course.add_run('课程编号：00931').font,16)
         for index, text in [(6, '学号：202232110113'), (7, '姓名：余家祥'), (8, '班级：软外241')]:
             p = self.doc.paragraphs[index]
             old = deepcopy(p.runs[0]._r.rPr) if p.runs else None
@@ -81,7 +89,16 @@ class Builder:
         self.doc.styles['Title'].font.color.rgb = RGBColor(0, 0, 0)
         self.doc.styles['Title'].paragraph_format.space_before = Pt(0)
         self.doc.styles['Title'].paragraph_format.space_after = Pt(0)
-        self.font(self.doc.styles['Normal'].font, 10.5)
+        self.configure_styles()
+        for index in (2, 4, 10):
+            p = self.doc.paragraphs[index]
+            for run in p.runs:
+                self.font(run.font, 24 if index != 10 else 16, chinese='黑体')
+                run.bold = True
+        for p in self.doc.paragraphs:
+            p.paragraph_format.first_line_indent = Pt(0)
+        self.experiment = 0
+        self.section_number = 0
         self.bookmark = 100
         self.num_ids = []
         numbering = self.doc.part.numbering_part.element
@@ -94,25 +111,60 @@ class Builder:
             start = OxmlElement('w:startOverride'); start.set(qn('w:val'), '1'); override.append(start); num.append(override)
             numbering.append(num); self.num_ids.append(num_id)
 
-    def font(self, font, size=10.5, code=False):
-        font.name = 'Consolas' if code else '宋体'; font.size = Pt(size)
+    def font(self, font, size=12, code=False, chinese='宋体'):
+        font.name = 'Consolas' if code else 'Times New Roman'; font.size = Pt(size)
         font.color.rgb = RGBColor(0, 0, 0); font.strike = False
         if hasattr(font, '_element'):
             pr = font._element
             if pr.tag == qn('w:rPr'):
                 fonts = pr.find(qn('w:rFonts'))
                 if fonts is None: fonts = OxmlElement('w:rFonts'); pr.insert(0, fonts)
-                fonts.set(qn('w:eastAsia'), '宋体')
+                for key in ('ascii', 'hAnsi', 'cs'):
+                    fonts.set(qn('w:'+key), 'Consolas' if code else 'Times New Roman')
+                fonts.set(qn('w:eastAsia'), chinese)
+
+    def configure_styles(self):
+        roles = [('Normal',12,'宋体',False), ('Heading 1',16,'黑体',True),
+                 ('Heading 2',12,'黑体',True), ('Heading 3',11,'黑体',True),
+                 ('Report Code',9,'宋体',False), ('Report Source',9.5,'宋体',False),
+                 ('Report Caption',10.5,'宋体',False), ('Report TOC',12,'宋体',False),
+                 ('Report Overview',14,'黑体',True)]
+        for name, size, chinese, bold in roles:
+            if name not in self.doc.styles:
+                self.doc.styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
+            style = self.doc.styles[name]
+            if name != 'Normal': style.base_style = self.doc.styles['Normal']
+            self.font(style.font,size,code=name=='Report Code',chinese=chinese)
+            style.font.bold = bold
+            fmt = style.paragraph_format
+            fmt.first_line_indent = Pt(24 if name=='Normal' else 0)
+            fmt.left_indent = Pt(0); fmt.right_indent = Pt(0)
+            fmt.space_before = Pt(0); fmt.space_after = Pt(6)
+            fmt.line_spacing = 1.3 if name=='Normal' else 1.15
+            fmt.widow_control = True
+            fmt.keep_with_next = name.startswith('Heading') or name=='Report Source'
+            fmt.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY if name=='Normal' else WD_ALIGN_PARAGRAPH.LEFT
+            if name.startswith('Heading'):
+                fmt.space_before = Pt(12 if name=='Heading 1' else 9)
+                fmt.space_after = Pt(8 if name=='Heading 1' else 4)
+                outline=style.element.get_or_add_pPr().find(qn('w:outlineLvl'))
+                if outline is None:
+                    outline=OxmlElement('w:outlineLvl'); style.element.get_or_add_pPr().append(outline)
+                outline.set(qn('w:val'),str(int(name[-1])-1))
+            if name=='Report Code':
+                fmt.space_after = Pt(0); fmt.line_spacing = 1.05
+            if name=='Report Source':
+                fmt.space_before=Pt(6); fmt.space_after=Pt(4)
+            if name=='Report TOC':
+                fmt.space_before=Pt(12); fmt.space_after=Pt(12)
+                fmt.tab_stops.add_tab_stop(Cm(14.65),WD_TAB_ALIGNMENT.RIGHT,WD_TAB_LEADER.DOTS)
 
     def para(self, text, bold=False, code=False):
-        p = self.doc.add_paragraph(style='Normal')
-        p.paragraph_format.space_after = Pt(4 if not code else 0)
-        p.paragraph_format.line_spacing = 1.12 if not code else 1.0
-        p.paragraph_format.widow_control = True
-        if code:
-            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            p.paragraph_format.first_line_indent = Pt(0)
-        r = p.add_run(text); self.font(r.font, 9 if code else 10.5, code); r.bold = bold
+        if not code and text.startswith(('概要设计：','详细设计：','数据库设计：')):
+            label, text = text.split('：',1)
+            self.doc.add_paragraph(label,style='Heading 3')
+        p = self.doc.add_paragraph(style='Report Code' if code else 'Normal')
+        r = p.add_run(text); r.bold = bold
         return p
 
     def heading(self, text, num_id=None, bookmark=None, page=False):
@@ -120,16 +172,18 @@ class Builder:
         elm = deepcopy(self.section_proto if num_id else self.title_proto)
         self.doc._element.body.insert(len(self.doc._element.body)-1, elm)
         p = Paragraph(elm, self.doc._body); p.clear()
-        r = p.add_run(text); self.font(r.font, 18); r.bold = False
-        p.paragraph_format.keep_with_next = True; p.paragraph_format.space_before = Pt(8)
-        p.paragraph_format.space_after = Pt(6); p.paragraph_format.page_break_before = page
-        p.alignment = WD_ALIGN_PARAGRAPH.LEFT if num_id else WD_ALIGN_PARAGRAPH.CENTER
+        # Clear the template's list indents/direct spacing before applying roles.
+        pr = elm.get_or_add_pPr()
+        for child in list(pr): pr.remove(child)
+        p.style = self.doc.styles['Heading 2' if num_id else 'Heading 1']
         if num_id:
-            np = elm.get_or_add_pPr().get_or_add_numPr()
-            np.get_or_add_numId().val = num_id; np.get_or_add_ilvl().val = 0
+            self.section_number += 1
+            text = f'{self.section_number} {text}'
         else:
-            np = elm.get_or_add_pPr().find(qn('w:numPr'))
-            if np is not None: elm.get_or_add_pPr().remove(np)
+            self.experiment += 1; self.section_number = 0
+        p.add_run(text)
+        p.paragraph_format.page_break_before = page
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT if num_id else WD_ALIGN_PARAGRAPH.CENTER
         if bookmark:
             a = OxmlElement('w:bookmarkStart'); a.set(qn('w:id'), str(self.bookmark)); a.set(qn('w:name'), bookmark)
             b = OxmlElement('w:bookmarkEnd'); b.set(qn('w:id'), str(self.bookmark)); self.bookmark += 1
@@ -137,9 +191,7 @@ class Builder:
         return p
 
     def code(self, path, start, end=None, count=14):
-        label = self.para('源码位置：' + path)
-        label.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        label.paragraph_format.keep_with_next = True
+        label = self.doc.add_paragraph('源码：' + path, style='Report Source')
         raw = textwrap.dedent(excerpt(path, start, end, count))
         displayed = []
         for line in raw.splitlines():
@@ -162,22 +214,35 @@ class Builder:
         pr.append(borders)
         for index, row in enumerate(t.rows):
             no_split = OxmlElement('w:cantSplit'); row._tr.get_or_add_trPr().append(no_split)
-            for cell in row.cells:
+            for column, cell in enumerate(row.cells):
+                cell.width = Cm(widths[column])
+                cell.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.CENTER
+                margins = OxmlElement('w:tcMar')
+                for side,value in [('top',60),('bottom',60),('left',90),('right',90)]:
+                    side_xml=OxmlElement('w:'+side); side_xml.set(qn('w:w'),str(value)); side_xml.set(qn('w:type'),'dxa'); margins.append(side_xml)
+                cell._tc.get_or_add_tcPr().append(margins)
                 for p in cell.paragraphs:
-                    p.paragraph_format.space_after = Pt(4); p.paragraph_format.space_before = Pt(4)
+                    p.paragraph_format.first_line_indent = Pt(0)
+                    p.paragraph_format.line_spacing = 1.15
+                    p.paragraph_format.space_after = Pt(2); p.paragraph_format.space_before = Pt(2)
                     p.paragraph_format.keep_with_next = index == 0
-                    for r in p.runs: self.font(r.font, 9.5); r.bold = index == 0
+                    p.alignment=WD_ALIGN_PARAGRAPH.CENTER if headers[column]=='结果' else WD_ALIGN_PARAGRAPH.LEFT
+                    for r in p.runs: self.font(r.font, 10.5); r.bold = index == 0
                 if index == 0:
                     s = OxmlElement('w:shd'); s.set(qn('w:fill'), 'F2F2F2'); cell._tc.get_or_add_tcPr().append(s)
             if index == 0:
                 repeat = OxmlElement('w:tblHeader'); row._tr.get_or_add_trPr().append(repeat)
-        self.para('')
+        spacer = self.doc.add_paragraph(); spacer.paragraph_format.space_after=Pt(3)
+        spacer.paragraph_format.line_spacing=1; spacer.paragraph_format.first_line_indent=Pt(0)
+        self.font(spacer.add_run().font,3)
 
     def image(self, name, caption, crop=None):
+        caption=re.sub(r'^图(\d) (\d) ',r'图 \1-\2 ',caption)
         path = EVIDENCE / name
         if not path.exists():
             self.para('截图尚未形成：' + name); return
         p = self.doc.add_paragraph(); p.paragraph_format.keep_with_next = True
+        p.paragraph_format.first_line_indent = Pt(0)
         p.paragraph_format.space_after = Pt(3)
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         from PIL import Image
@@ -185,7 +250,7 @@ class Builder:
             width, height = picture.size
         left, top, right, bottom = crop or (0, 0, width, height)
         visible_width, visible_height = right-left, bottom-top
-        display_width = min(14.4, 12.8 * visible_width / visible_height)
+        display_width = min(14.4, 10.0 * visible_width / visible_height)
         picture = p.add_run().add_picture(str(path), width=Cm(display_width),
                                          height=Cm(display_width*visible_height/visible_width))
         if crop:
@@ -197,11 +262,14 @@ class Builder:
                 rect.set(side, str(round(value * 100000)))
             fill.insert(1, rect)
             picture._inline.docPr.set('descr', f'真实截图 {name}；Word裁剪局部 {crop}；原图完整嵌入')
-        cap = self.para(caption); cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        for r in cap.runs: self.font(r.font, 10)
+        cap = self.doc.add_paragraph(caption,style='Report Caption')
+        cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cap.paragraph_format.space_after = Pt(9)
 
     def footer(self):
+        self.doc.sections[0].different_first_page_header_footer=True
         p = self.doc.sections[0].footer.paragraphs[0]; p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.first_line_indent = Pt(0)
         r = p.add_run(); self.font(r.font, 10)
         begin = OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'), 'begin'); r._r.append(begin)
         instr = OxmlElement('w:instrText'); instr.text = ' PAGE '; r._r.append(instr)
@@ -229,21 +297,23 @@ class Builder:
                  'preserve_only_parts':preserve, 'preserve_only_equal':all(source[n]==final[n] for n in preserve),
                  'geometry_equal':geo(ref_xml)==geo(out_xml), 'experiments':5, 'sections_per_experiment':6,
                  'added_parts':[n for n in final if n not in source], 'render_status':'PENDING',
-                 'intentional_changes':['身份填写','五实验正文及真实截图','目录真实页码','PAGE页脚与打开时更新字段']}
+                 'intentional_changes':['身份填写','五实验正文及真实截图','目录真实页码','PAGE页脚与打开时更新字段','按用户2026-10-08要求精修标题层级、正文、表格图注和每实验起页']}
         (QA/'structure-check.json').write_text(json.dumps(facts,ensure_ascii=False,indent=2),encoding='utf-8')
         print(OUTPUT)
 
 
 def make(pages):
     b = Builder()
-    b.para('课程通知平台  五个实验合订报告', bold=True)
+    overview=b.doc.add_paragraph('课程通知平台  五个实验合订报告',style='Report Overview')
+    overview.alignment=WD_ALIGN_PARAGRAPH.CENTER
     b.para('本报告记录从用户管理后端、Vue课程通知界面、Git协作到权限控制和课程资料问答的实现过程。运行结果对应本地新项目的真实日志与界面。演示课程资料用于功能验证，不代表教师发布的实际任务。')
-    for i, title in enumerate(TITLES,1): b.para(title + '  ' + str(pages.get('exp'+str(i),'待核对')))
+    for i, title in enumerate(TITLES,1):
+        b.doc.add_paragraph(title+'\t'+str(pages.get('exp'+str(i),'待核对')),style='Report TOC')
     b.para('每个实验依次包含项目介绍、相关开发技术、项目设计、关键代码、运行结果、心得六栏目。')
     for i, title in enumerate(TITLES,1):
         # Body experiments flow naturally; only the source cover/contents/body
         # boundary forces a new page. This avoids isolated reflection pages.
-        b.heading(title,bookmark='exp'+str(i),page=i == 1)
+        b.heading(title,bookmark='exp'+str(i),page=True)
         for section_index, section in enumerate(SECTIONS):
             b.heading(section, b.num_ids[i-1])
             content(b,i,section_index)

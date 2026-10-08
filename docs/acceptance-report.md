@@ -15,8 +15,8 @@ Verified-Commit: f679beba7ae984da4b16ad984968cad735ef9472
 | AC-E4-02 | PASS | `reports/2026-10-08/security-check.json` `reports/2026-10-08/ui-check.json` `reports/2026-10-08/model-check.json` `reports/2026-10-08/archive-check.json` | 内存令牌及刷新清除，输入与注入检查；Git、DOCX内部和ZIP按实际私有值扫描。 |
 | AC-E5-01 | PASS | `reports/2026-10-08/model-check.json` `reports/2026-10-08/final-sdk-check.json` `reports/2026-10-08/prompt-check.json` `reports/2026-10-08/rag.png` | 原真实模型及SDK记录与未变化的生产代码对应；450/80 TF-IDF课程Top3检索和原文引用已验证。 |
 | AC-E5-02 | PASS | `reports/2026-10-08/model-check.json` `reports/2026-10-08/model-semantic-review.json` `reports/2026-10-08/ai-reflection.md` | 缺资料/跨课/注入拒答，资料内真实攻击不执行，停服503无假答案；实际引用问题及修正如实记录。 |
-| AC-DOC-01 | PASS | `reports/2026-10-08/document-check.json` `reports/2026-10-08/documentQA/code-excerpt-check.json` `reports/2026-10-08/documentQA/structure-check.json` | 单一18页五实验报告。修复代码硬切，79段摘录完整源行匹配；7个变化页目视复核，另11页与此前逐页图字节一致。 |
-| AC-PKG-01 | PASS | `reports/2026-10-08/archive-check.json` `reports/2026-10-08/resume-archive-build-check.json` `reports/2026-10-08/resume-archive-backend-build.log` `reports/2026-10-08/resume-archive-frontend-build.log` | 新源码包实际解包逐文件校验、40项Java测试及npm ci/build通过；终版仅增补验收产物，再作真实内容和排密校验并收尾提交。 |
+| AC-DOC-01 | UNVERIFIED | `reports/2026-10-08/document-check.json` `reports/2026-10-08/documentQA/code-excerpt-check.json` `reports/2026-10-08/documentQA/structure-check.json` | 单一18页五实验报告。修复代码硬切，79段摘录完整源行匹配；7个变化页目视复核，另11页与此前逐页图字节一致。 |
+| AC-PKG-01 | UNVERIFIED | `reports/2026-10-08/archive-check.json` `reports/2026-10-08/resume-archive-build-check.json` `reports/2026-10-08/resume-archive-backend-build.log` `reports/2026-10-08/resume-archive-frontend-build.log` | 新源码包实际解包逐文件校验、40项Java测试及npm ci/build通过；终版仅增补验收产物，再作真实内容和排密校验并收尾提交。 |
 
 ## 证据版本和复核范围
 
