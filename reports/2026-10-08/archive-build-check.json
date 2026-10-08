@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "frontend_log": "archive-frontend-build.log",
+  "private_runtime_copied": false,
+  "actual_extraction_performed": true,
+  "backend_log": "archive-backend-build.log",
+  "runtime_configuration": "Test profile uses public test configuration; actual credentials must be generated on another computer per README",
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "packaged_commit": "9631697dc1586b73e7e14aa1473f16389ab10ace",
+  "frontend": "PASS",
+  "java_tests": 40,
+  "backend": "PASS"
+}
