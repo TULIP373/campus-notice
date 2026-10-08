@@ -6,6 +6,7 @@ import NoticeList from './components/NoticeList.vue'
 import NoticeDetail from './components/NoticeDetail.vue'
 import NoticeForm from './components/NoticeForm.vue'
 import LoginForm from './components/LoginForm.vue'
+import AskPanel from './components/AskPanel.vue'
 
 const courses = ref([])
 const selectedCourse = ref(null)
@@ -250,6 +251,7 @@ onUnauthorized(() => logout('登录状态已失效，请重新登录。'))
               </div>
             </div>
           </div>
+          <AskPanel :key="`${user.id}:${selectedCourse.id}:${sessionEpoch}`" :course="selectedCourse" :session-key="sessionEpoch" />
         </template>
       </section>
     </main>

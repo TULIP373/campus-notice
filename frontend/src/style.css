@@ -77,3 +77,13 @@ select:focus-visible, textarea:focus-visible { outline: 3px solid #68aadf; outli
 .login-panel input { display: block; width: 100%; }
 .login-panel button { margin: 20px 0 14px; }
 @media (max-width: 680px) { .account-bar { justify-content: end; } .login-panel { margin: 24px 0; padding: 22px; } }
+.ask-panel { margin-top: 24px; padding-top: 24px; border-top: 1px solid #dbe5ed; }
+.ask-panel h2 { margin-bottom: 6px; }
+.ask-panel form label { font-size: 14px; }
+.ask-panel textarea { display: block; margin: 8px 0 12px; }
+.ask-panel form button { margin-bottom: 12px; }
+.ask-result { margin-top: 18px; padding: 20px; border: 1px solid #dbe5ed; border-radius: 8px; background: #f8fafc; overflow-wrap: anywhere; }
+.source-detail { margin-top: 10px; padding: 12px; background: #fff; border: 1px solid #dbe5ed; border-radius: 6px; }
+.source-detail summary { cursor: pointer; font-size: 14px; color: #1764a1; }
+.source-detail summary:focus-visible { outline: 3px solid #68aadf; outline-offset: 2px; }
+.source-detail p { margin: 12px 0 0; }
