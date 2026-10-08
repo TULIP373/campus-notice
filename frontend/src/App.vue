@@ -210,7 +210,7 @@ onUnauthorized(() => logout('登录状态已失效，请重新登录。'))
   <div class="app-shell">
     <header class="page-header">
       <div><p class="eyebrow">个人项目 · 课程信息集中整理</p><h1>课程通知平台</h1></div>
-      <div v-if="user" class="account-bar"><span class="student-label">{{ user.displayName }} · {{ teacherMode ? '教师' : '学生' }}</span><button class="secondary" @click="logout()">退出登录</button></div>
+      <div v-if="user" class="account-bar"><span class="student-label">{{ user.name }} · {{ teacherMode ? '教师' : '学生' }}</span><button class="secondary" @click="logout()">退出登录</button></div>
     </header>
     <p class="demo-banner">本机演示课程：软件项目实训的截止时间待老师通知；其他课程日期为演示示例，请以老师实际发布的信息为准。</p>
     <p v-if="authMessage" class="error" role="alert">{{ authMessage }}</p>
