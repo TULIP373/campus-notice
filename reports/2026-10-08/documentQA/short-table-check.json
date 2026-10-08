@@ -1,0 +1,31 @@
+{
+  "result": "PASS",
+  "before_commit": "58f32ab574377dd4bd01661d7c5e6bc895fde70b",
+  "changed_png_pages": [
+    12,
+    13,
+    14
+  ],
+  "unchanged_png_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "short_role_permission_table_kept_on_one_page": true,
+  "independent_visual_review": "PENDING"
+}

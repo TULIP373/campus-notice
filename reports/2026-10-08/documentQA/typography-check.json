@@ -93,7 +93,7 @@
     "exp4": 12,
     "exp5": 16
   },
-  "report_sha256": "0aa14103554fefc06def95178c6487d02dcecc08d3667949f6256ccbd53965f8",
+  "report_sha256": "7e00c1213f0470260da260460231c09ae2781570b1ad37b06d5a567df807311b",
   "cover_first_page_has_no_folio": true,
   "visual_review": "PENDING independent full-page visual review",
   "regression_before_result": "FAIL",

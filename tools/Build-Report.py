@@ -229,7 +229,7 @@ class Builder:
                     p.paragraph_format.first_line_indent = Pt(0)
                     p.paragraph_format.line_spacing = 1.15
                     p.paragraph_format.space_after = Pt(2); p.paragraph_format.space_before = Pt(2)
-                    p.paragraph_format.keep_with_next = index == 0
+                    p.paragraph_format.keep_with_next = index == 0 or (len(t.rows)<=3 and index<len(t.rows)-1)
                     p.alignment=WD_ALIGN_PARAGRAPH.CENTER if headers[column]=='结果' else WD_ALIGN_PARAGRAPH.LEFT
                     for r in p.runs: self.font(r.font, 10.5,chinese='黑体' if index==0 else '宋体'); r.bold = index == 0
                 if index == 0:
