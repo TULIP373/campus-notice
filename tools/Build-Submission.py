@@ -1,6 +1,7 @@
 """从Git已跟踪文件构建源码ZIP；运行库、秘密和依赖缓存不进入归档。"""
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -13,7 +14,7 @@ PROOF = ROOT / 'reports/2026-10-08/archive-check.json'
 
 def private_values():
     result = []
-    for name in ['database.properties', 'security.properties']:
+    for name in ['database.properties', 'security.properties', 'mysql-app.cnf', 'mysql-root.cnf']:
         path = ROOT / '.runtime' / name
         if path.exists():
             for line in path.read_text(encoding='utf-8-sig').splitlines():
@@ -24,6 +25,8 @@ def private_values():
     accounts = ROOT / '.runtime/demo-accounts.json'
     if accounts.exists():
         result.extend(item['password'].encode() for item in json.loads(accounts.read_text(encoding='utf-8-sig')).values())
+    if os.environ.get('OPENAI_API_KEY'):
+        result.append(os.environ['OPENAI_API_KEY'].encode())
     return result
 
 
