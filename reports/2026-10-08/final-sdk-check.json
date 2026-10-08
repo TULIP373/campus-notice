@@ -20,5 +20,10 @@
   "ended_at": "2026-10-08T04:49:40.0474323Z",
   "bridge_process_started": "2026-10-08T04:47:29.9288434Z",
   "before_count": 0,
-  "provider": "official Python Codex SDK0.161.0 ChatGPT login"
+  "provider": "official Python Codex SDK0.161.0 ChatGPT login",
+  "sequential_observations": [
+    "Fresh model bridge start: 0 SDK event lines",
+    "Root directly read raw model-bridge.log after final API completion: exactly 2 event lines",
+    "UI check started only after API completion; final raw log exactly 3 lines"
+  ]
 }
