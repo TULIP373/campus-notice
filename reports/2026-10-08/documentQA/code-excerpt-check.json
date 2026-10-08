@@ -1,9 +1,0 @@
-{
-  "result": "PASS",
-  "excerpt_calls": 13,
-  "code_paragraphs": 79,
-  "path_order_and_complete_source_lines_match": true,
-  "no_identifier_or_literal_hard_wrap": true,
-  "report_sha256": "7e00c1213f0470260da260460231c09ae2781570b1ad37b06d5a567df807311b",
-  "verified_commit": "7e7443c70270bfd35a52eded66718e9aa6e2610a"
-}

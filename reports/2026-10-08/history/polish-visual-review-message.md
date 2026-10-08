@@ -1,5 +1,0 @@
-Reviewed-Commit: 7e7443c70270bfd35a52eded66718e9aa6e2610a
-
-来源：独立代理 /root/polish_acceptance 实际发给root的原始消息；最终输出因连接中断未完成，因此本记录仅是已完成的视觉审查，不作为完整验收Verdict。
-
-已亲自按每批3张查看全部21页，实际排版无必修缺陷：目录点引导与双位页码一致，实验三10—11页自然结束，角色权限短表完整在13页，图注和图片同页。继续独立字体/摘录/ZIP/应用不变核对。注意当前document-check仍PENDING及polish-package旧SHA/PROGRESS18页确实尚待你的最终证据更新，我会在结论明确其增量收尾要求。

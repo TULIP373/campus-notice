@@ -6,27 +6,27 @@
 
 ## 在这台电脑上演示
 
-双击项目根目录的 `start.cmd`，等待启动完成后会打开浏览器。也可以在 CMD 中输入：
+双击 tools 文件夹中的 `tools\start.cmd`，等待启动完成后会打开浏览器。也可以在 CMD 中输入：
 
 ```cmd
-start.cmd
+tools\start.cmd
 ```
 
 | 文件 | 用途 |
 | --- | --- |
-| start.cmd | 启动数据库、后端和前端，并打开网页 |
-| start-backend.cmd | 单独启动数据库和后端 |
-| start-frontend.cmd | 单独启动前端，并打开网页 |
-| start-model.cmd | 启动课程问答的模型服务 |
-| stop.cmd | 停止前后端，保留数据库服务 |
+| tools\start.cmd | 启动数据库、后端和前端，并打开网页 |
+| tools\start-backend.cmd | 单独启动数据库和后端 |
+| tools\start-frontend.cmd | 单独启动前端，并打开网页 |
+| tools\start-model.cmd | 启动课程问答的模型服务 |
+| tools\stop.cmd | 停止前后端，保留数据库服务 |
 
 已经启动的服务会直接复用。已有 JAR 时不再编译；首次启动没有 JAR 时会自动构建。启动失败会在窗口中显示原因，详细日志在 `.runtime`。
 
 网页地址：`http://127.0.0.1:5173/`。后端检查地址：`http://127.0.0.1:8080/api/health`。
 
-学生和教师账号在本机 `.runtime/demo-accounts.json`。刷新网页后需要重新登录。演示问答前运行 `start-model.cmd`；模型服务启动后，首次提问可能需要等待。
+学生和教师账号在本机 `.runtime/demo-accounts.json`。刷新网页后需要重新登录。演示问答前运行 `tools\start-model.cmd`；模型服务启动后，首次提问可能需要等待。
 
-如果只是想通过命令运行、不打开浏览器和暂停窗口，在命令后加 `-NoPause`，例如 `start.cmd -NoPause`。
+如果只是想通过命令运行、不打开浏览器和暂停窗口，在命令后加 `-NoPause`，例如 `tools\start.cmd -NoPause`。
 
 ## 项目目录
 
@@ -53,12 +53,12 @@ start.cmd
 ./tools\Start-Frontend.ps1
 ```
 
-换电脑时使用自己安装的 MySQL 服务。`start.cmd` 中的数据库便捷启动仅适用于当前电脑已经准备好的本地运行库；源码包不含数据库软件和数据文件。模型服务安装方法见 `model-service/README.md`。
+换电脑时使用自己安装的 MySQL 服务。`tools\start.cmd` 中的数据库便捷启动仅适用于当前电脑已经准备好的本地运行库；源码包不含数据库软件和数据文件。模型服务安装方法见 `model-service/README.md`。
 
 ## 检查和交付
 
 后端测试：`.\mvnw.cmd -B -ntp verify`。
 前端构建：进入 `frontend` 后运行 `npm ci` 和 `npm run build`。
-接口检查：`python tools/check_api.py --stage final`。
+接口检查：`python tools\check_api.py --stage final`。
 
 报告在 `deliverables/202232110113余家祥.docx`。源码包还包含 SQL、配置示例和运行说明。GitHub 地址在本人推送仓库后补充；目前未进行远程 PR 或云端 CI。

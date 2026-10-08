@@ -4,7 +4,7 @@ Java 后端通过本地8787端口请求模型服务，发送课程资料和问�
 
 ## 本机启动
 
-双击项目根目录的 `start-model.cmd`。前后端仍用 `start.cmd` 启动。
+双击 tools 文件夹中的 `tools\start-model.cmd`。前后端仍用 `tools\start.cmd` 启动。
 
 `GET /health` 表示 HTTP 服务已经启动，实际能否回答需要在页面提问确认。模型不可用时返回错误，不自动更换接口。
 

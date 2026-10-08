@@ -1,6 +1,0 @@
-{
-  "pages": 21,
-  "dpi": 150,
-  "method": "Word COM PDF plus bundled pypdfium2 fallback",
-  "canonical_renderer": "Bundled LibreOffice unavailable; actual canonical failure recorded in template contract"
-}

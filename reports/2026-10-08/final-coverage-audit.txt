@@ -1,5 +1,0 @@
-独立 coverage-checker：/root/final_coverage_audit，2026-10-08
-11项AC均有自动测试或明确人工检查映射，coverage gate实际退出0。
-MODEL-MATERIAL-INJECTION-01实际脚本保存真实攻击资料，正常问题检索包含完整攻击文本，检查当前课程引用/正分数/编号/真实要求/TXT/待通知，并finally删除仅本轮资料204后GET404。资料攻击不能以问题本地拒答假通过。
-docs/test-cases.md已补用例及AC-E4-02、AC-E5-01、AC-E5-02映射，没有放宽标准。dirty preflight不得作最终通过证据。
-要求主代理额外做SDK日志、语义、秘密、视觉和ZIP解包核对；覆盖结论不代替最终review。
