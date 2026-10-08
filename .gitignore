@@ -46,3 +46,5 @@ __pycache__/
 
 # Office temporary lock files
 ~$*.docx
+
+/演示账号.txt
