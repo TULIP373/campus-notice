@@ -1,7 +1,7 @@
 {
-  "verified_commit": "562d47a172874a302977113a0c9f0479838eeea4",
+  "verified_commit": "26c5786302fb80d623a56b66d447e9c7639e20ef",
   "output": "202232110113余家祥_源代码.zip",
-  "file_count": 325,
+  "file_count": 326,
   "zip_integrity": "PASS",
   "decompressed_contents_match_sources": true,
   "actual_private_values_absent": true,
@@ -245,6 +245,7 @@
     "campus-notice/reports/2026-10-08/model-semantic-review.json",
     "campus-notice/reports/2026-10-08/openapi-check.json",
     "campus-notice/reports/2026-10-08/persistence-state.json",
+    "campus-notice/reports/2026-10-08/polish-package-check.json",
     "campus-notice/reports/2026-10-08/prompt-check.json",
     "campus-notice/reports/2026-10-08/rag-unavailable.png",
     "campus-notice/reports/2026-10-08/rag.png",
@@ -343,6 +344,6 @@
     "campus-notice/tools/harness-check.ps1",
     "campus-notice/环境说明.md"
   ],
-  "sha256": "2a0ee692bdf3a677aef34ed2cf79acab63fbcd22d0d51b04cbf8407c3db21a7a",
+  "sha256": "1df43240dfb69f5a49587d3b478c7085cd6dde9ebe028cd8dcc7112807f8961d",
   "note": "已解包到任务.runtime/archive-extracted下的新目录并逐文件核对；archive-check.json本身不进入ZIP，避免包含自身哈希的循环；本地Git仓库另保留完整提交历史。"
 }
