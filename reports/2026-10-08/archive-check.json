@@ -1,7 +1,7 @@
 {
-  "verified_commit": "26c5786302fb80d623a56b66d447e9c7639e20ef",
+  "verified_commit": "064f98da45453ad2c7ce7e108ab32449935006fb",
   "output": "202232110113余家祥_源代码.zip",
-  "file_count": 326,
+  "file_count": 328,
   "zip_integrity": "PASS",
   "decompressed_contents_match_sources": true,
   "actual_private_values_absent": true,
@@ -114,6 +114,7 @@
     "campus-notice/reports/2026-10-08/documentQA/history/pre-final-pagination/page-23.png",
     "campus-notice/reports/2026-10-08/documentQA/history/pre-final-pagination/page-24.png",
     "campus-notice/reports/2026-10-08/documentQA/history/pre-wrap-fix-document-check.json",
+    "campus-notice/reports/2026-10-08/documentQA/history/toc-spacing-before.png",
     "campus-notice/reports/2026-10-08/documentQA/page-1.png",
     "campus-notice/reports/2026-10-08/documentQA/page-10.png",
     "campus-notice/reports/2026-10-08/documentQA/page-11.png",
@@ -143,6 +144,7 @@
     "campus-notice/reports/2026-10-08/documentQA/resume-export.log",
     "campus-notice/reports/2026-10-08/documentQA/structure-check.json",
     "campus-notice/reports/2026-10-08/documentQA/style-check.json",
+    "campus-notice/reports/2026-10-08/documentQA/toc-polish-check.json",
     "campus-notice/reports/2026-10-08/documentQA/typography-check.json",
     "campus-notice/reports/2026-10-08/e1-crud-api.json",
     "campus-notice/reports/2026-10-08/e1-crud-build.log",
@@ -344,6 +346,6 @@
     "campus-notice/tools/harness-check.ps1",
     "campus-notice/环境说明.md"
   ],
-  "sha256": "1df43240dfb69f5a49587d3b478c7085cd6dde9ebe028cd8dcc7112807f8961d",
+  "sha256": "63bd326a0ffd0c6b0505954c84e713ca9c910c5094a75363245d6d389016e7e2",
   "note": "已解包到任务.runtime/archive-extracted下的新目录并逐文件核对；archive-check.json本身不进入ZIP，避免包含自身哈希的循环；本地Git仓库另保留完整提交历史。"
 }
