@@ -115,20 +115,22 @@ class Builder:
         font.name = 'Consolas' if code else 'Times New Roman'; font.size = Pt(size)
         font.color.rgb = RGBColor(0, 0, 0); font.strike = False
         if hasattr(font, '_element'):
-            pr = font._element
-            if pr.tag == qn('w:rPr'):
-                fonts = pr.find(qn('w:rFonts'))
-                if fonts is None: fonts = OxmlElement('w:rFonts'); pr.insert(0, fonts)
-                for key in ('ascii', 'hAnsi', 'cs'):
-                    fonts.set(qn('w:'+key), 'Consolas' if code else 'Times New Roman')
-                fonts.set(qn('w:eastAsia'), chinese)
+            element=font._element
+            pr=element if element.tag==qn('w:rPr') else element.get_or_add_rPr()
+            fonts=pr.find(qn('w:rFonts'))
+            if fonts is None: fonts=OxmlElement('w:rFonts'); pr.insert(0,fonts)
+            for key in ('ascii', 'hAnsi', 'cs'):
+                fonts.set(qn('w:'+key), 'Consolas' if code else 'Times New Roman')
+            fonts.set(qn('w:eastAsia'), chinese)
+            for key in ('asciiTheme','hAnsiTheme','eastAsiaTheme','cstheme'):
+                fonts.attrib.pop(qn('w:'+key),None)
 
     def configure_styles(self):
         roles = [('Normal',12,'宋体',False), ('Heading 1',16,'黑体',True),
                  ('Heading 2',12,'黑体',True), ('Heading 3',11,'黑体',True),
                  ('Report Code',9,'宋体',False), ('Report Source',9.5,'宋体',False),
                  ('Report Caption',10.5,'宋体',False), ('Report TOC',12,'宋体',False),
-                 ('Report Overview',14,'黑体',True)]
+                 ('Report Overview',14,'黑体',True), ('Report Spacer',3,'宋体',False)]
         for name, size, chinese, bold in roles:
             if name not in self.doc.styles:
                 self.doc.styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
@@ -139,7 +141,7 @@ class Builder:
             fmt = style.paragraph_format
             fmt.first_line_indent = Pt(24 if name=='Normal' else 0)
             fmt.left_indent = Pt(0); fmt.right_indent = Pt(0)
-            fmt.space_before = Pt(0); fmt.space_after = Pt(6)
+            fmt.space_before = Pt(0); fmt.space_after = Pt(4 if name=='Normal' else 6)
             fmt.line_spacing = 1.3 if name=='Normal' else 1.15
             fmt.widow_control = True
             fmt.keep_with_next = name.startswith('Heading') or name=='Report Source'
@@ -155,6 +157,8 @@ class Builder:
                 fmt.space_after = Pt(0); fmt.line_spacing = 1.05
             if name=='Report Source':
                 fmt.space_before=Pt(6); fmt.space_after=Pt(4)
+            if name=='Report Spacer':
+                fmt.space_after=Pt(3); fmt.line_spacing=1
             if name=='Report TOC':
                 fmt.space_before=Pt(12); fmt.space_after=Pt(12)
                 fmt.tab_stops.add_tab_stop(Cm(14.65),WD_TAB_ALIGNMENT.RIGHT,WD_TAB_LEADER.DOTS)
@@ -206,7 +210,7 @@ class Builder:
             t.columns[i].width = Cm(w); t.rows[0].cells[i].text = h
         for row in rows:
             cells = t.add_row().cells
-            for cell, value in zip(cells, row): cell.text = str(value)
+            for cell, value in zip(cells, row): cell.text = {'PASS':'通过','FAIL':'未通过'}.get(str(value),str(value))
         pr = t._tbl.tblPr
         borders = OxmlElement('w:tblBorders')
         for edge in ['top','left','bottom','right','insideH','insideV']:
@@ -227,12 +231,12 @@ class Builder:
                     p.paragraph_format.space_after = Pt(2); p.paragraph_format.space_before = Pt(2)
                     p.paragraph_format.keep_with_next = index == 0
                     p.alignment=WD_ALIGN_PARAGRAPH.CENTER if headers[column]=='结果' else WD_ALIGN_PARAGRAPH.LEFT
-                    for r in p.runs: self.font(r.font, 10.5); r.bold = index == 0
+                    for r in p.runs: self.font(r.font, 10.5,chinese='黑体' if index==0 else '宋体'); r.bold = index == 0
                 if index == 0:
                     s = OxmlElement('w:shd'); s.set(qn('w:fill'), 'F2F2F2'); cell._tc.get_or_add_tcPr().append(s)
             if index == 0:
                 repeat = OxmlElement('w:tblHeader'); row._tr.get_or_add_trPr().append(repeat)
-        spacer = self.doc.add_paragraph(); spacer.paragraph_format.space_after=Pt(3)
+        spacer = self.doc.add_paragraph(style='Report Spacer'); spacer.paragraph_format.space_after=Pt(3)
         spacer.paragraph_format.line_spacing=1; spacer.paragraph_format.first_line_indent=Pt(0)
         self.font(spacer.add_run().font,3)
 
@@ -326,7 +330,7 @@ def make(pages):
                     5: ('资料检索、提示、SDK桥及问答原型', '只答本课程原文、未知不猜、引用可核对、故障不伪造', '真实SDK、三次提示练习、课程隔离和注入、模型停止错误及原文比对'),
                 }
                 scope, prompt, checks = records[i]
-                b.para('AI使用记录：Codex辅助'+scope+'；提示要求“'+prompt+'”；产出为相应代码、配置和检查建议，通过'+checks+'核验。本人仍须阅读、理解并复述关键流程，自动验证不等于本人已逐行理解。')
+                b.para('AI使用记录：Codex辅助'+scope+'；提示要求“'+prompt+'”；产出为相应代码、配置和检查建议，通过'+checks+'核验。')
     b.footer(); b.save()
 
 
@@ -379,23 +383,21 @@ def content(b, experiment, section):
             b.para('浏览器发现的问题需要结合真实请求和数据库重查，截图不能代替接口测试。个人学习重点是组件如何通知父组件重查、刷新后为何保留修改，以及CORS错误和业务错误的区别；演示资料必须明确标识。')
     elif experiment == 3:
         if section == 0:
-            b.para('实验三使用本地Git保存开发过程，完成feature分支、真实冲突与合并，增加PR模板及构建检查。远程推送待本人完成，当前无GitHub仓库链接或在线PR。')
-            b.para('先创建feature/commit-convention并与主分支分别修改同一行，保留冲突日志，解决后提交dec915d，再加入PR模板与CI，执行本地构建命令。')
+            b.para('实验三用本地Git保存开发过程：在feature/commit-convention分支与主分支修改同一行，保留冲突并形成合并提交dec915d，再加入PR模板和CI，执行本地构建。远程推送由本人完成，目前尚无GitHub链接或在线PR。')
         elif section == 1:
             b.para('Git分支隔离变更，merge整合历史。GitHub Actions配置Java17 Maven verify和Vue构建两个任务；PR模板说明变更、验证与风险。')
             b.para('CI文件存在只说明自动化流程已配置。未推送时无法证明云端工作流通过，因此本报告区分本地命令结果和云端执行状态。')
         elif section == 2:
             b.para('概要设计：实际步骤形成带实验编号的中文提交；两分支修改开发约定的同一行产生CONFLICT，随后保留两项规则再合并。')
             b.para('详细设计：提交摘要既包含实验编号和中文动作，又要求验证相关改动并保存证据。PR模板要求描述验证方式，CI使用只读contents权限并关闭checkout凭据持久化。')
-            b.para('数据库设计：本实验不新增业务数据库表。版本库保存源码与SQL脚本，运行中的数据库文件、密钥、依赖缓存不作为版本数据提交。')
-            b.table(['材料','实际状态'], [('feature/commit-convention','本地真实分支'),('dec915d','实际冲突解决与合并提交'),('.github/PULL_REQUEST_TEMPLATE.md','已编写'),('.github/workflows/ci.yml','已配置前后端两个任务'),('远程PR与云端CI','未推送，未执行')],[6.2,8.3])
+            b.para('数据库设计：本实验不新增业务表，版本库管理源码与SQL；数据库运行文件、密钥和依赖缓存均排除。PR模板和前后端两个CI任务仅完成本地配置，未执行远程运行。')
         elif section == 3:
             b.code('.github/workflows/ci.yml','      - uses: actions/setup-java@v6',count=6)
             b.code('.github/workflows/ci.yml','      - run: npm ci',count=2)
             b.para('真实冲突来自docs/开发约定.md：主分支要求验证后留证，feature分支要求摘要包含实验编号。冲突标记保存在git-conflict.log；最终约定吸收两条规则，而不是删去一方要求。')
         elif section == 4:
             history = (EVIDENCE/'git-history.txt').read_text(encoding='utf-8-sig')
-            b.para(f'git-history.txt的阶段记录包含{len(history.splitlines())}条提交，全部来自真实操作；后续安全与问答实现继续形成新提交。真实冲突日志显示CONFLICT (content)，合并提交为dec915d。')
+            b.para(f'git-history.txt记录实验三阶段的{len(history.splitlines())}条真实提交，后续实验继续形成新提交。冲突日志和双父合并提交dec915d共同验证本地协作过程。')
             b.para('本地后端阶段测试14条通过，前端npm ci和npm run build最终通过。首次前端重装依赖被运行中的Vite占用原生模块阻止，停止进程后重跑成功；失败保存在e3-vite-lock-failure.log，最终通过以e3-local-ci-frontend.log为准。')
             b.table(['验证','结果','证据'], [('分支冲突','真实发生并解决','git-conflict.log、git-check.json'),('本地后端检查','通过','e3-local-ci-backend.log'),('本地前端检查','最终通过','e3-local-ci-frontend.log'),('远程操作','未执行','git-check.json')],[3,3.5,8])
         else:
@@ -462,13 +464,16 @@ def content(b, experiment, section):
                 for test in model.get('tests', []):
                     details = test.get('details',{})
                     answer = details.get('answer','')
-                    summary = re.sub(r'\*\*','',answer).replace('\n',' ')
+                    summary = re.sub(r'(?m)^\s*[-*]\s+','',re.sub(r'\*\*','',answer)).replace('\n','；')
                     if test.get('test') == 'MODEL-01':
                         summary = '回答五实验合并DOCX、源码与SQL配置和环境说明压缩包、本人推送后填写GitHub；注明“截止时间：尚未确认，待教师通知。[1]”。'
                     if test.get('test') == 'MODEL-UNAVAILABLE-01':
                         summary = '关闭模型桥后的实际HTTP状态：'+str(details.get('http',details.get('status','见原始证据')))+'；明确错误，未用固定答案替代。'
-                    observations.append((test.get('test','检查'),test.get('result','未验证'),summary))
-                b.table(['检查','结果','实际回答观察'],observations,[4.2,1.3,9])
+                    labels={'MODEL-UNAVAILABLE-01':'模型停服处理','MODEL-01':'提交要求问答',
+                            'MODEL-NO-DATA-01':'无相关资料','MODEL-CROSS-01':'跨课程提问',
+                            'MODEL-INJECTION-01':'问题中的恶意指令','MODEL-MATERIAL-INJECTION-01':'资料中的恶意指令'}
+                    observations.append((labels.get(test.get('test'),test.get('test','检查')),test.get('result','未验证'),summary))
+                b.table(['检查','结果','实际回答观察'],observations,[3.2,1.5,9.8])
                 real = next((t for t in model.get('tests',[]) if t.get('test')=='MODEL-01'),{})
                 if real:
                     sources = real.get('details',{}).get('sources',[])

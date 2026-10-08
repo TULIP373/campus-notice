@@ -1,16 +1,8 @@
 {
-  "checked_at": "2026-10-08T13:41:19.646203+08:00",
-  "before": {
-    "code_paragraphs": 88,
-    "unmatched_source_lines": 16,
-    "result": "FAIL"
-  },
-  "after": {
-    "code_paragraphs": 79,
-    "unmatched_source_lines": 0,
-    "result": "PASS"
-  },
-  "assertion": "Every code paragraph must equal one complete source line after indentation normalization",
-  "production_source_changed": false,
-  "result": "PASS"
+  "result": "PASS",
+  "excerpt_calls": 13,
+  "code_paragraphs": 79,
+  "path_order_and_complete_source_lines_match": true,
+  "no_identifier_or_literal_hard_wrap": true,
+  "report_sha256": "1189166747420f53539c62c244d8cd3b1a2769be46758f6102c8c3eb95ad3d28"
 }

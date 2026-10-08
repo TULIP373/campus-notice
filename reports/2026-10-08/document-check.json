@@ -1,30 +1,11 @@
 {
   "report": "deliverables/202232110113余家祥.docx",
-  "sha256": "ed5c50eef8e9388936596bb09a4ca0723daa18c33e32ce70b127e433872237c0",
-  "reviewed_at": "2026-10-08T13:41:19.653961+08:00",
-  "pages": 18,
-  "all_pages_viewed": [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18
-  ],
-  "result": "PASS",
-  "reviewer": "root: directly reviewed all 7 changed pages; remaining 11 PNGs byte-identical to previously reviewed full 18-page rendering",
+  "sha256": "1189166747420f53539c62c244d8cd3b1a2769be46758f6102c8c3eb95ad3d28",
+  "reviewed_at": "2026-10-08T13:59:41.658624+08:00",
+  "pages": 21,
+  "all_pages_viewed": [],
+  "result": "PENDING",
+  "reviewer": "Pending independent full 21-page visual review of repaired polish",
   "identity": [
     "202232110113",
     "余家祥",
@@ -33,39 +14,16 @@
   "experiments": 5,
   "sections_per_experiment": 6,
   "toc": {
-    "exp4": 10,
     "exp1": 3,
-    "exp5": 14,
-    "exp3": 8,
-    "exp2": 5
+    "exp2": 6,
+    "exp3": 10,
+    "exp4": 12,
+    "exp5": 16
   },
   "template_geometry_equal": true,
   "template_preserve_parts_equal": true,
-  "observations": "Removed hard paragraph wrapping of code. All 79 code paragraphs match complete source lines. Word soft wrapping is visual only. Reviewed changed pages 4/6/11/15/16/17/18 individually in small batches: no clipping, overlap or missing text; 18 pages and original TOC map unchanged.",
+  "observations": "True Chinese font settings, hierarchy, template geometry, complete source excerpts and real TOC passed strict checks; visual review pending.",
   "render_method": "Word COM read-only PDF export and bundled pypdfium2; canonical bundled LibreOffice unavailable, fallback recorded",
-  "version_binding_basis": "Report generator and DOCX repair committed in f679beb; all 7 changed page images reviewed, remaining 11 PNGs identical; source/test/configuration unchanged.",
-  "code_excerpt_source_match": true,
-  "latest_changed_pages_viewed": [
-    4,
-    6,
-    11,
-    15,
-    16,
-    17,
-    18
-  ],
-  "pixel_identical_previously_reviewed_pages": [
-    1,
-    2,
-    3,
-    5,
-    7,
-    8,
-    9,
-    10,
-    12,
-    13,
-    14
-  ],
-  "verified_commit": "f679beba7ae984da4b16ad984968cad735ef9472"
+  "version_binding_basis": "Application/tests/configuration unchanged; report generator and DOCX are new and require fresh visual review.",
+  "code_excerpt_source_match": true
 }
