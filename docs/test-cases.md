@@ -82,6 +82,8 @@ python tools/check_api.py --stage final --model-unavailable
 
 ## 构建、数据库、UI 和交付检查
 
+**UNIT-RAG-01（AC-E5-01、AC-E5-02）：** `RagServiceTest` 在实现前依据公开契约写出六项：900 个可区分中文字符切出 450/450/160 字三块、相邻精确重叠 80；短资料/恰好450字不重复；逆序输入仍按余弦分数归一化排序只取前三块；先过滤 courseId 保证他课事实不可召回；无关“龘/火星签证”不借助共享单字产生引用；正文、提交要求、格式、日期、来源各自可以召回原文。这里是中文字符 unigram/bigram TF-IDF 稀疏向量，不能在报告称为神经语义嵌入。提交后执行 `./mvnw.cmd -B -ntp "-Dtest=RagServiceTest" test`，未实现时不以缺少类的编译错误充当有效失败证明；实现后如要证明断言抓错，只临时污染 courseId/切块步长/排序等目标行为再留实际断言失败日志，随后恢复并重跑。当前测试准备未执行。
+
 **UNIT-SECURITY-01（AC-E4-01）：** 独立 JWT/登录单测只调用应用实际公开配置或服务入口，不能构造一套与应用无关的编码器后称为生产安全通过。`SecurityConfigTest` 五项：正常 HS256 解码、错误密钥拒绝、签名有效但过期拒绝、教师角色与数据库权限转换、学生不会获得教师或维护权限。权限测试使用公开数据库契约 `user:write/notice:write/course:read/notice:read/ask:use`。`JwtServiceTest` 检查应用实际签发可验证令牌，sub/issuer/role/permissions 正确、iat 至 exp 为 30 分钟且未包含密码/哈希。`AuthServiceTest` 三项使用真实 BCrypt、Mockito 隔离用户与角色权限读取：正确密码返回 token 且签发使用数据库角色权限，错误密码和不存在账号均 401 且不签发 token。完整方法权限仍用 AUTH-01/STUDENT-WRITE-01 真 HTTP 状态复核。
 
 提交后执行 `./mvnw.cmd -B -ntp "-Dtest=SecurityConfigTest,JwtServiceTest,AuthServiceTest" test`，预计新增 9 项，再执行全量 verify。`@MockitoBean PermissionMapper` 与公开测试占位密钥使上下文隔离本机 MySQL、私有密钥。尚未执行，不能预判通过。签名与 exp 校验依据 [Spring Security 官方 JWT 文档](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html)，实际断言针对本应用 Spring Boot 3 所带的生产配置。
