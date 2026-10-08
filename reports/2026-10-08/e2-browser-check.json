@@ -1,0 +1,11 @@
+{
+  "screenshots": [
+    "e2-student.png",
+    "e2-teacher.png"
+  ],
+  "update": "浏览器修改提交要求，刷新后重新选课读取更新值",
+  "create": "浏览器创建[测试]通知，API返回保存结果",
+  "commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
+  "delete": "页面内联确认及取消保持数据已验证；实际DELETE由接口验收通过，测试行随后API清理",
+  "student": "切换三门课、通知/资料、详情均显示真实数据"
+}

@@ -6,7 +6,7 @@
 
 ## 当前阶段
 
-实验一：Java17、Spring Boot3、MyBatis、MySQL，用户 CRUD 的 Entity / Mapper / Service / Controller 已实现，正在验证。后续实验完成后更新本说明，不把规划功能写成已完成结果。
+实验一已验证用户 CRUD、BCrypt 和真实 MySQL 重启持久化；实验二已完成 Vue 页面、课程通知维护、Axios 联调、CORS 和 OpenAPI。后续实验仍按顺序进行。
 
 ## 本机实验一运行
 
@@ -15,12 +15,17 @@
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Database.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/Init-Database.ps1 -SqlFile database/01-users.sql
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Init-Database.ps1 -SqlFile database/02-courses-notices.sql
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Init-Database.ps1 -SqlFile database/03-demo-content.sql
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Backend.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Frontend.ps1
 ```
 
 健康接口为 `http://127.0.0.1:8080/api/health`。用户接口 `/api/users` 与 `/api/users/{id}`，方法 GET、POST、PUT、DELETE；后续实验四加入登录和教师权限。用户名、姓名、角色与密码由请求填写，数据库仅保存 BCrypt 哈希，接口不返回密码哈希。
 
 本机数据库软件、数据、私有配置在 `.runtime`，已被 Git 忽略。ASCII 目录联接 `.local/campus-notice-runtime` 指向同一份本机文件，解决 Windows MySQL 对中文路径的兼容问题。
+
+页面地址为 `http://127.0.0.1:5173/`；前端单独运行，后端在8080。通知接口与错误格式见 `docs/openapi.yaml`。Windows 重新打包前先运行 `tools/Stop-Backend.ps1`，否则运行中的 JAR 会被占用。
 
 ## 其他电脑配置
 
