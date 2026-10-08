@@ -82,6 +82,10 @@ python tools/check_api.py --stage final --model-unavailable
 
 ## 构建、数据库、UI 和交付检查
 
+**UNIT-ASK-01（AC-E4-02、AC-E5-01、AC-E5-02）：** `AskServiceTest` 七项先验证缺资料、数据库内其他课程名、明显提示注入均明确拒答且不调用模型；合法问题调用模型时捕获分离的 System/User，规则不能混入问题原文，User 含当前检索原文、问题、标题和来源，无他课事实；成功引用 [1] 对应真实检索块；虚构 [99] 或未引用不应成功；0/1001 字 400，1/1000 字无资料也应合法明确拒答。Mockito 响应只测试编排，不代表真实模型通过。
+
+**UNIT-MODEL-01（AC-E5-02）：** `ModelClientTest` 四项用真实本地 JDK HttpServer 和生产 HttpClient 验证完整 POST endpoint 的 `{system,user}` 请求与 `{answer}` 响应、连接拒绝 503、上游 500 转为 503 且不暴露 rawbody、空答案 502。服务仅绑定随机 localhost 端口并在 finally 关闭，公开模拟值不是账号秘密。该桩不称为大模型结果；超时 504 及真实订阅模型调用仍单独由真实环境证据验证。提交后运行 `./mvnw.cmd -B -ntp "-Dtest=AskServiceTest,ModelClientTest" test`，预计新增 11 项；此处当前仅准备，未执行。
+
 **UNIT-RAG-01（AC-E5-01、AC-E5-02）：** `RagServiceTest` 在实现前依据公开契约写出六项：900 个可区分中文字符切出 450/450/160 字三块、相邻精确重叠 80；短资料/恰好450字不重复；逆序输入仍按余弦分数归一化排序只取前三块；先过滤 courseId 保证他课事实不可召回；无关“龘/火星签证”不借助共享单字产生引用；正文、提交要求、格式、日期、来源各自可以召回原文。这里是中文字符 unigram/bigram TF-IDF 稀疏向量，不能在报告称为神经语义嵌入。提交后执行 `./mvnw.cmd -B -ntp "-Dtest=RagServiceTest" test`，未实现时不以缺少类的编译错误充当有效失败证明；实现后如要证明断言抓错，只临时污染 courseId/切块步长/排序等目标行为再留实际断言失败日志，随后恢复并重跑。当前测试准备未执行。
 
 **UNIT-SECURITY-01（AC-E4-01）：** 独立 JWT/登录单测只调用应用实际公开配置或服务入口，不能构造一套与应用无关的编码器后称为生产安全通过。`SecurityConfigTest` 五项：正常 HS256 解码、错误密钥拒绝、签名有效但过期拒绝、教师角色与数据库权限转换、学生不会获得教师或维护权限。权限测试使用公开数据库契约 `user:write/notice:write/course:read/notice:read/ask:use`。`JwtServiceTest` 检查应用实际签发可验证令牌，sub/issuer/role/permissions 正确、iat 至 exp 为 30 分钟且未包含密码/哈希。`AuthServiceTest` 三项使用真实 BCrypt、Mockito 隔离用户与角色权限读取：正确密码返回 token 且签发使用数据库角色权限，错误密码和不存在账号均 401 且不签发 token。完整方法权限仍用 AUTH-01/STUDENT-WRITE-01 真 HTTP 状态复核。
