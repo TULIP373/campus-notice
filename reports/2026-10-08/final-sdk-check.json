@@ -1,0 +1,24 @@
+{
+  "result": "PASS",
+  "started_at": "2026-10-08T04:47:30.5315614Z",
+  "tool_events": 0,
+  "secrets_copied": false,
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "real_sdk_calls": 3,
+  "model_return_times": "model-check.json and ui-check.json",
+  "event_types": [
+    "userMessage",
+    "agentMessage"
+  ],
+  "evidence": "final-sdk-events.log",
+  "expected_calls": [
+    "API MODEL-01",
+    "API MODEL-MATERIAL-INJECTION-01",
+    "UI UI-ASK-MODEL"
+  ],
+  "after_count": 3,
+  "ended_at": "2026-10-08T04:49:40.0474323Z",
+  "bridge_process_started": "2026-10-08T04:47:29.9288434Z",
+  "before_count": 0,
+  "provider": "official Python Codex SDK0.161.0 ChatGPT login"
+}

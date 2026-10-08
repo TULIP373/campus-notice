@@ -1,0 +1,5 @@
+实际命令：./tools/Stop-ModelBridge.ps1
+实际结果：Process identity changed; refusing to stop it.
+只读核对：record started与live UTC StartTime的o字符串相同，进程名python.exe、命令行是本项目bridge.py。
+原因：PowerShell7 ConvertFrom-Json把ISO时间自动转为DateTime，字符串比较会使用区域格式。
+修复：将记录时间标准化到UTC，与实际进程启动Ticks精确比较；仍保留PID/脚本/进程名检查，未降低身份验证。

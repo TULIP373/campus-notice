@@ -1,0 +1,117 @@
+{
+  "generated_at": "2026-10-08T08:19:37+0800",
+  "base_url": "http://127.0.0.1:8080",
+  "stage": "final",
+  "verified_commit": "71a1c0dc1f984c4a89921d53512e467430ec54d6",
+  "implementation_dirty": true,
+  "current_run_passed": true,
+  "passed": true,
+  "tests": [
+    {
+      "test": "LOGIN-01",
+      "ac": [
+        "AC-E4-01"
+      ],
+      "group": "security",
+      "verified_commit": "71a1c0dc1f984c4a89921d53512e467430ec54d6",
+      "stage": "final",
+      "started_at": "2026-10-08T08:19:36+0800",
+      "implementation_dirty": true,
+      "result": "PASS",
+      "details": {
+        "roles": [
+          "teacher",
+          "student"
+        ],
+        "credentials_logged": false
+      },
+      "finished_at": "2026-10-08T08:19:36+0800"
+    },
+    {
+      "test": "AUTH-01",
+      "ac": [
+        "AC-E4-01"
+      ],
+      "group": "security",
+      "verified_commit": "71a1c0dc1f984c4a89921d53512e467430ec54d6",
+      "stage": "final",
+      "started_at": "2026-10-08T08:19:37+0800",
+      "implementation_dirty": true,
+      "result": "PASS",
+      "details": {
+        "login_failure": 401,
+        "anonymous": 401,
+        "student_admin": 403,
+        "tampered": 401
+      },
+      "finished_at": "2026-10-08T08:19:37+0800"
+    },
+    {
+      "test": "EXPIRED-01",
+      "ac": [
+        "AC-E4-01"
+      ],
+      "group": "security",
+      "verified_commit": "71a1c0dc1f984c4a89921d53512e467430ec54d6",
+      "stage": "final",
+      "started_at": "2026-10-08T08:19:37+0800",
+      "implementation_dirty": true,
+      "result": "PASS",
+      "details": {
+        "expired_signature_is_valid": true,
+        "expired_http": 401,
+        "secrets_logged": false
+      },
+      "finished_at": "2026-10-08T08:19:37+0800"
+    },
+    {
+      "test": "STUDENT-WRITE-01",
+      "ac": [
+        "AC-E4-01"
+      ],
+      "group": "security",
+      "verified_commit": "71a1c0dc1f984c4a89921d53512e467430ec54d6",
+      "stage": "final",
+      "started_at": "2026-10-08T08:19:37+0800",
+      "implementation_dirty": true,
+      "result": "PASS",
+      "details": {
+        "student_create_update_delete": 403
+      },
+      "finished_at": "2026-10-08T08:19:37+0800"
+    },
+    {
+      "test": "INJECTION-01",
+      "ac": [
+        "AC-E4-02"
+      ],
+      "group": "security",
+      "verified_commit": "71a1c0dc1f984c4a89921d53512e467430ec54d6",
+      "stage": "final",
+      "started_at": "2026-10-08T08:19:37+0800",
+      "implementation_dirty": true,
+      "result": "PASS",
+      "details": {
+        "sql_text_is_literal": true,
+        "invalid_lengths": [
+          0,
+          1001
+        ],
+        "valid_bounds": [
+          {
+            "length": 1,
+            "http": 200
+          },
+          {
+            "length": 1000,
+            "http": 200
+          }
+        ]
+      },
+      "finished_at": "2026-10-08T08:19:37+0800"
+    }
+  ],
+  "sensitive_fields_logged": false,
+  "previous_evidence": "history/20261008-081937-7bfb20ac49-security-check.json",
+  "version_bound_passed": false
+}

@@ -1,0 +1,206 @@
+{
+  "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+  "started_at": "2026-10-08T00:53:50.204Z",
+  "model_mode": "unavailable",
+  "real_browser": "installed Edge / Playwright headless / fresh contexts",
+  "real_frontend": "http://127.0.0.1:5173",
+  "real_backend": "http://127.0.0.1:8080",
+  "mocked_requests": false,
+  "implementation_dirty": true,
+  "dirty_files": [
+    " M tools/check_api.py",
+    "?? \"deliverables/202232110113\\344\\275\\231\\345\\256\\266\\347\\245\\245.docx\"",
+    "?? docs/report-template.docx",
+    "?? tools/Build-Report.py"
+  ],
+  "tests": [
+    {
+      "id": "UI-LOGIN-STUDENT",
+      "ac": [
+        "AC-E2-01",
+        "AC-E4-02"
+      ],
+      "description": "Fresh browser context: real student login; no maintenance controls.",
+      "started_at": "2026-10-08T00:53:52.091Z",
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:52.296Z"
+    },
+    {
+      "id": "UI-COURSES-DETAILS",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "description": "Switch at least three real courses; compare notice requirements, format, deadline and source to live detail responses; view materials.",
+      "started_at": "2026-10-08T00:53:52.296Z",
+      "checked_courses": [
+        {
+          "course_id": 1,
+          "course_name": "软件项目实训（二）",
+          "notice_id": 1,
+          "material_id": 2
+        },
+        {
+          "course_id": 2,
+          "course_name": "数据库原理",
+          "notice_id": 9,
+          "material_id": 4
+        },
+        {
+          "course_id": 3,
+          "course_name": "软件测试",
+          "notice_id": 5,
+          "material_id": 6
+        }
+      ],
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:52.888Z"
+    },
+    {
+      "id": "UI-TEACHER-CREATE-EDIT",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "description": "Teacher creates a unique test notice through the real form, edits it, and reads server-persisted fields.",
+      "started_at": "2026-10-08T00:53:52.888Z",
+      "created_notice_id": 17,
+      "original_data_modified": false,
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:53.426Z"
+    },
+    {
+      "id": "UI-REFRESH-RELOGIN",
+      "ac": [
+        "AC-E2-01",
+        "AC-E4-02"
+      ],
+      "description": "Student refresh loses session; browser stores no token; re-login reads the teacher update.",
+      "started_at": "2026-10-08T00:53:53.426Z",
+      "token_in_local_storage": false,
+      "token_in_session_storage": false,
+      "token_in_cookie": false,
+      "refresh_requires_login": true,
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:54.195Z"
+    },
+    {
+      "id": "UI-TEACHER-DELETE",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "description": "Teacher deletes only the notice created by this check; subsequent GET is 404.",
+      "started_at": "2026-10-08T00:53:54.195Z",
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:54.250Z"
+    },
+    {
+      "id": "UI-ASK-NO-DATA",
+      "ac": [
+        "AC-E4-02",
+        "AC-E5-02"
+      ],
+      "description": "Submit a real question through the page; require explicit refusal and empty sources.",
+      "started_at": "2026-10-08T00:53:54.278Z",
+      "http_status": 200,
+      "course_id": 1,
+      "answer": "未找到与问题相关的当前课程资料，无法给出可靠回答。",
+      "sources": [],
+      "model_called": false,
+      "model_called_basis": "Application pre-model refusal path; this is not evidence of actual model success.",
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:54.400Z"
+    },
+    {
+      "id": "UI-ASK-CROSS-COURSE",
+      "ac": [
+        "AC-E4-02",
+        "AC-E5-02"
+      ],
+      "description": "Submit a real question through the page; require explicit refusal and empty sources.",
+      "started_at": "2026-10-08T00:53:54.400Z",
+      "http_status": 200,
+      "course_id": 1,
+      "answer": "当前课程资料无法回答其他课程的专属要求，请先切换到对应课程。",
+      "sources": [],
+      "model_called": false,
+      "model_called_basis": "Application pre-model refusal path; this is not evidence of actual model success.",
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:54.508Z"
+    },
+    {
+      "id": "UI-ASK-INJECTION",
+      "ac": [
+        "AC-E4-02",
+        "AC-E5-02"
+      ],
+      "description": "Submit a real question through the page; require explicit refusal and empty sources.",
+      "started_at": "2026-10-08T00:53:54.508Z",
+      "http_status": 200,
+      "course_id": 1,
+      "answer": "无法执行泄露提示词、密码、密钥或读取文件的指令。请提出当前课程相关问题。",
+      "sources": [],
+      "model_called": false,
+      "model_called_basis": "Application pre-model refusal path; this is not evidence of actual model success.",
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:54.625Z"
+    },
+    {
+      "id": "UI-ASK-SERVICE-FAILURE",
+      "ac": [
+        "AC-E5-01",
+        "AC-E5-02"
+      ],
+      "description": "With the real model service unavailable, a relevant question shows explicit service error.",
+      "started_at": "2026-10-08T00:53:54.625Z",
+      "http_status": 503,
+      "displayed_result": {
+        "message": "无法连接模型服务，请先启动本地模型桥接服务"
+      },
+      "requires_model_log_cross_check": false,
+      "result": "PASS",
+      "ended_at": "2026-10-08T00:53:54.747Z"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "reports/2026-10-08/ui-unavailable/student.png",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "implementation_dirty": true,
+      "captured_at": "2026-10-08T00:53:52.888Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-unavailable/teacher.png",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "implementation_dirty": true,
+      "captured_at": "2026-10-08T00:53:53.426Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-unavailable/ui-ask-no-data.png",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "implementation_dirty": true,
+      "captured_at": "2026-10-08T00:53:54.400Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-unavailable/ui-ask-cross-course.png",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "implementation_dirty": true,
+      "captured_at": "2026-10-08T00:53:54.508Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-unavailable/ui-ask-injection.png",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "implementation_dirty": true,
+      "captured_at": "2026-10-08T00:53:54.625Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-unavailable/rag.png",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "implementation_dirty": true,
+      "captured_at": "2026-10-08T00:53:54.746Z"
+    }
+  ],
+  "actual_model_success": false,
+  "visual_review": "Pending direct image inspection; automated checks do not prove visual quality.",
+  "ended_at": "2026-10-08T00:53:55.054Z",
+  "current_run_passed": true,
+  "version_bound_passed": false
+}

@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-10-08T12:46:44+0800",
+  "base_url": "http://127.0.0.1:8080",
+  "stage": "final",
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "implementation_dirty": false,
+  "current_run_passed": true,
+  "passed": true,
+  "tests": [
+    {
+      "test": "MODEL-UNAVAILABLE-01",
+      "ac": [
+        "AC-E5-02"
+      ],
+      "group": "model",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:46:44+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "http": 503,
+        "message": "无法连接模型服务，请先启动本地模型桥接服务"
+      },
+      "finished_at": "2026-10-08T12:46:44+0800"
+    }
+  ],
+  "sensitive_fields_logged": false,
+  "previous_evidence": "history/20261008-124644-e54f07a6a6-model-check.json",
+  "version_bound_passed": true
+}

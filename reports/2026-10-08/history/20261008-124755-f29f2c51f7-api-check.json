@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-10-08T12:47:22+0800",
+  "base_url": "http://127.0.0.1:8080",
+  "stage": "final",
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "implementation_dirty": false,
+  "current_run_passed": true,
+  "passed": true,
+  "tests": [
+    {
+      "test": "PERSIST-CREATE-01",
+      "ac": [
+        "AC-E1-02"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:46:43+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "row_created": true,
+        "restart_still_required": true
+      },
+      "finished_at": "2026-10-08T12:46:43+0800"
+    },
+    {
+      "test": "HEALTH-01",
+      "ac": [
+        "AC-E1-01"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:21+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "status": "UP"
+      },
+      "finished_at": "2026-10-08T12:47:21+0800"
+    },
+    {
+      "test": "CRUD-01",
+      "ac": [
+        "AC-E1-02"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:21+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "created_read_updated_deleted": true,
+        "chinese": true,
+        "duplicate_http": 409,
+        "invalid_http": 400,
+        "deleted_http": 404
+      },
+      "finished_at": "2026-10-08T12:47:22+0800"
+    },
+    {
+      "test": "PERSIST-VERIFY-01",
+      "ac": [
+        "AC-E1-02"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:22+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "row_survived": true,
+        "cleanup": true,
+        "note": "服务及数据库重启必须另外由进程日志证明"
+      },
+      "finished_at": "2026-10-08T12:47:22+0800"
+    },
+    {
+      "test": "COURSES-01",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:22+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "courses": [
+          {
+            "course_id": 1,
+            "rows": 2
+          },
+          {
+            "course_id": 2,
+            "rows": 3
+          },
+          {
+            "course_id": 3,
+            "rows": 2
+          }
+        ]
+      },
+      "finished_at": "2026-10-08T12:47:22+0800"
+    },
+    {
+      "test": "CORS-01",
+      "ac": [
+        "AC-E2-02"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:22+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "allowed_origin": "http://localhost:5173",
+        "other_origin_has_no_allow_header": true,
+        "denied_status": 403
+      },
+      "finished_at": "2026-10-08T12:47:22+0800"
+    },
+    {
+      "test": "NOTICES-01",
+      "ac": [
+        "AC-E2-01",
+        "AC-E2-02"
+      ],
+      "group": "api",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:22+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "crud": true,
+        "keyword": true,
+        "invalid_rejected": true
+      },
+      "finished_at": "2026-10-08T12:47:22+0800"
+    }
+  ],
+  "sensitive_fields_logged": false,
+  "previous_evidence": "history/20261008-124722-f2e21a688c-api-check.json",
+  "version_bound_passed": true
+}

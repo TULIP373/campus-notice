@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-10-08T08:10:20+0800",
+  "generated_at": "2026-10-08T12:47:55+0800",
   "base_url": "http://127.0.0.1:8080",
   "stage": "final",
-  "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
-  "implementation_dirty": true,
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "implementation_dirty": false,
   "current_run_passed": true,
   "passed": true,
   "tests": [
@@ -13,10 +13,10 @@
         "AC-E4-01"
       ],
       "group": "security",
-      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
       "stage": "final",
-      "started_at": "2026-10-08T08:10:19+0800",
-      "implementation_dirty": true,
+      "started_at": "2026-10-08T12:47:30+0800",
+      "implementation_dirty": false,
       "result": "PASS",
       "details": {
         "roles": [
@@ -25,7 +25,7 @@
         ],
         "credentials_logged": false
       },
-      "finished_at": "2026-10-08T08:10:19+0800"
+      "finished_at": "2026-10-08T12:47:30+0800"
     },
     {
       "test": "AUTH-01",
@@ -33,10 +33,10 @@
         "AC-E4-01"
       ],
       "group": "security",
-      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
       "stage": "final",
-      "started_at": "2026-10-08T08:10:19+0800",
-      "implementation_dirty": true,
+      "started_at": "2026-10-08T12:47:31+0800",
+      "implementation_dirty": false,
       "result": "PASS",
       "details": {
         "login_failure": 401,
@@ -44,7 +44,7 @@
         "student_admin": 403,
         "tampered": 401
       },
-      "finished_at": "2026-10-08T08:10:19+0800"
+      "finished_at": "2026-10-08T12:47:31+0800"
     },
     {
       "test": "EXPIRED-01",
@@ -52,17 +52,17 @@
         "AC-E4-01"
       ],
       "group": "security",
-      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
       "stage": "final",
-      "started_at": "2026-10-08T08:10:19+0800",
-      "implementation_dirty": true,
+      "started_at": "2026-10-08T12:47:31+0800",
+      "implementation_dirty": false,
       "result": "PASS",
       "details": {
         "expired_signature_is_valid": true,
         "expired_http": 401,
         "secrets_logged": false
       },
-      "finished_at": "2026-10-08T08:10:19+0800"
+      "finished_at": "2026-10-08T12:47:31+0800"
     },
     {
       "test": "STUDENT-WRITE-01",
@@ -70,18 +70,48 @@
         "AC-E4-01"
       ],
       "group": "security",
-      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
       "stage": "final",
-      "started_at": "2026-10-08T08:10:19+0800",
-      "implementation_dirty": true,
+      "started_at": "2026-10-08T12:47:31+0800",
+      "implementation_dirty": false,
       "result": "PASS",
       "details": {
         "student_create_update_delete": 403
       },
-      "finished_at": "2026-10-08T08:10:20+0800"
+      "finished_at": "2026-10-08T12:47:31+0800"
+    },
+    {
+      "test": "INJECTION-01",
+      "ac": [
+        "AC-E4-02"
+      ],
+      "group": "security",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "stage": "final",
+      "started_at": "2026-10-08T12:47:31+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "sql_text_is_literal": true,
+        "invalid_lengths": [
+          0,
+          1001
+        ],
+        "valid_bounds": [
+          {
+            "length": 1,
+            "http": 200
+          },
+          {
+            "length": 1000,
+            "http": 200
+          }
+        ]
+      },
+      "finished_at": "2026-10-08T12:47:31+0800"
     }
   ],
   "sensitive_fields_logged": false,
-  "previous_evidence": "history/20261008-081020-0a2c3c020c-security-check.json",
-  "version_bound_passed": false
+  "previous_evidence": "history/20261008-124755-f29f2c51f7-security-check.json",
+  "version_bound_passed": true
 }

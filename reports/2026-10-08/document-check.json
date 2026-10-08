@@ -1,0 +1,48 @@
+{
+  "report": "deliverables/202232110113余家祥.docx",
+  "sha256": "C63B2250AC810F86F7505AD921286D547845BF6822BA075E7FC146EEEE01CAB3",
+  "reviewed_at": "2026-10-08T12:43:57.5449225+08:00",
+  "pages": 18,
+  "all_pages_viewed": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+  ],
+  "result": "PASS",
+  "reviewer": "root directly viewed every latest 150-DPI page PNG",
+  "identity": [
+    "202232110113",
+    "余家祥",
+    "软外241"
+  ],
+  "experiments": 5,
+  "sections_per_experiment": 6,
+  "toc": {
+    "exp4": 10,
+    "exp1": 3,
+    "exp5": 14,
+    "exp3": 8,
+    "exp2": 5
+  },
+  "template_geometry_equal": true,
+  "template_preserve_parts_equal": true,
+  "observations": "每页检查中文字体、边界、表格、代码摘录和真实截图；修复孤立表头，实验四截图裁剪保持角色和课程完整；目录页码核对通过。GitHub由本人推送后填写，模板无教师栏。",
+  "render_method": "Word COM read-only PDF export and bundled pypdfium2; canonical bundled LibreOffice unavailable, fallback recorded",
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "version_binding_basis": "Unchanged database/schema and DOCX since full checks; final API security checks confirm active database."
+}

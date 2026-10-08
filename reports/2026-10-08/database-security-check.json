@@ -1,0 +1,15 @@
+{
+  "result": [
+    "8.4.8\tcampus_notice\tnotice_dev@127.0.0.1",
+    "STUDENT\task:use,course:read,notice:read",
+    "TEACHER\task:use,course:read,notice:read,notice:write,user:write",
+    "STUDENT\t1\t1",
+    "TEACHER\t1\t1",
+    "4"
+  ],
+  "password_output": false,
+  "checks": "真实MySQL版本、角色权限、BCrypt计数、外键；不输出哈希或密码",
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "generated_at": "2026-10-08T12:44:43.7266679+08:00",
+  "version_binding_basis": "Unchanged database/schema and DOCX since full checks; final API security checks confirm active database."
+}

@@ -1,0 +1,28 @@
+{
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "result": "PASS",
+  "reviewed_by": "root read controllers, security filters and OpenAPI paths",
+  "paths": [
+    "/api/health",
+    "/api/auth/login",
+    "/api/users",
+    "/api/users/{id}",
+    "/api/courses",
+    "/api/courses/{id}",
+    "/api/notices",
+    "/api/notices/{id}",
+    "/api/ask"
+  ],
+  "observations": [
+    "Health/login public, remaining bearer JWT",
+    "Teacher user and notice write role plus permissions",
+    "POST201 DELETE204 missing404 duplicate409 validation400",
+    "Ask 200 answer/sources and model failure502/503/504",
+    "User schema omits passwordHash; notice schema includes requirements format nullable deadline source type"
+  ],
+  "runtime_evidence": [
+    "api-check.json",
+    "security-check.json",
+    "model-check.json"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "observed_at": "2026-10-08T00:48:01.337952+00:00",
+  "provider": "official openai-codex",
+  "sdk_version": "0.161.0",
+  "model_called": true,
+  "request": {
+    "system": "你是课程问答助手，仅根据公开演示资料回答并引用[S1]；禁止编造。",
+    "user": "公开演示资料[S1]：软件项目实训课程的实验五报告截止时间为2026年10月20日18:00，提交PDF格式报告。问题：实验五报告何时截止，应提交什么格式？"
+  },
+  "observed_http_status": 502,
+  "observed_result": {
+    "message": "检测到问答之外的工具事件，已拒绝交付模型回答。"
+  },
+  "observed_event_types": [
+    "userMessage",
+    "agentMessage"
+  ],
+  "answer_delivered": false,
+  "answer": null,
+  "finding": "SDK正常返回userMessage输入回显，但原桥事件白名单遗漏此类型并拒绝交付。不能用此记录宣称真实问答验收通过。",
+  "implemented_fix": "事件白名单补充官方userMessage输入回显，仍拒绝所有其他类型；未再次调用模型，等待提交后集成验证。",
+  "actual_call_timeout_seconds": 180,
+  "current_production_timeout_seconds": 110,
+  "safety_after_fix": {
+    "status": "safe",
+    "sdk": "0.161.0",
+    "runtime": {
+      "name": "codex_python_sdk",
+      "version": "0.161.0 (Windows 10.0.26300; x86_64) dumb (codex_python_sdk; 0.161.0)"
+    },
+    "profile": "campus-question-only",
+    "model_called": false
+  },
+  "latest_model_answer_validation": "UNVERIFIED",
+  "sources": [
+    "https://learn.chatgpt.com/docs/config-file/config-reference",
+    "https://raw.githubusercontent.com/openai/codex/rust-v0.161.0/codex-rs/windows-sandbox-rs/src/setup_provisioning/setup_runtime_bin.rs",
+    "https://raw.githubusercontent.com/openai/codex/rust-v0.161.0/codex-rs/mxc-sandbox/README.md"
+  ]
+}

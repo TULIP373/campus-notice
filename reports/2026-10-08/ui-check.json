@@ -1,0 +1,213 @@
+{
+  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "started_at": "2026-10-08T04:48:03.480Z",
+  "model_mode": "live",
+  "real_browser": "installed Edge / Playwright headless / fresh contexts",
+  "real_frontend": "http://127.0.0.1:5173",
+  "real_backend": "http://127.0.0.1:8080",
+  "mocked_requests": false,
+  "implementation_dirty": false,
+  "dirty_files": [],
+  "tests": [
+    {
+      "id": "UI-LOGIN-STUDENT",
+      "ac": [
+        "AC-E2-01",
+        "AC-E4-02"
+      ],
+      "description": "Fresh browser context: real student login; no maintenance controls.",
+      "started_at": "2026-10-08T04:48:05.112Z",
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:05.293Z"
+    },
+    {
+      "id": "UI-COURSES-DETAILS",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "description": "Switch at least three real courses; compare notice requirements, format, deadline and source to live detail responses; view materials.",
+      "started_at": "2026-10-08T04:48:05.293Z",
+      "checked_courses": [
+        {
+          "course_id": 1,
+          "course_name": "软件项目实训（二）",
+          "notice_id": 1,
+          "material_id": 2
+        },
+        {
+          "course_id": 2,
+          "course_name": "数据库原理",
+          "notice_id": 9,
+          "material_id": 4
+        },
+        {
+          "course_id": 3,
+          "course_name": "软件测试",
+          "notice_id": 5,
+          "material_id": 6
+        }
+      ],
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:05.826Z"
+    },
+    {
+      "id": "UI-TEACHER-CREATE-EDIT",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "description": "Teacher creates a unique test notice through the real form, edits it, and reads server-persisted fields.",
+      "started_at": "2026-10-08T04:48:05.826Z",
+      "created_notice_id": 29,
+      "original_data_modified": false,
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:06.253Z"
+    },
+    {
+      "id": "UI-REFRESH-RELOGIN",
+      "ac": [
+        "AC-E2-01",
+        "AC-E4-02"
+      ],
+      "description": "Student refresh loses session; browser stores no token; re-login reads the teacher update.",
+      "started_at": "2026-10-08T04:48:06.253Z",
+      "token_in_local_storage": false,
+      "token_in_session_storage": false,
+      "token_in_cookie": false,
+      "refresh_requires_login": true,
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:06.995Z"
+    },
+    {
+      "id": "UI-TEACHER-DELETE",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "description": "Teacher deletes only the notice created by this check; subsequent GET is 404.",
+      "started_at": "2026-10-08T04:48:06.995Z",
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:07.042Z"
+    },
+    {
+      "id": "UI-ASK-NO-DATA",
+      "ac": [
+        "AC-E4-02",
+        "AC-E5-02"
+      ],
+      "description": "Submit a real question through the page; require explicit refusal and empty sources.",
+      "started_at": "2026-10-08T04:48:07.062Z",
+      "http_status": 200,
+      "course_id": 1,
+      "answer": "未找到与问题相关的当前课程资料，无法给出可靠回答。",
+      "sources": [],
+      "model_called": false,
+      "model_called_basis": "Application pre-model refusal path; this is not evidence of actual model success.",
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:07.151Z"
+    },
+    {
+      "id": "UI-ASK-CROSS-COURSE",
+      "ac": [
+        "AC-E4-02",
+        "AC-E5-02"
+      ],
+      "description": "Submit a real question through the page; require explicit refusal and empty sources.",
+      "started_at": "2026-10-08T04:48:07.151Z",
+      "http_status": 200,
+      "course_id": 1,
+      "answer": "当前课程资料无法回答其他课程的专属要求，请先切换到对应课程。",
+      "sources": [],
+      "model_called": false,
+      "model_called_basis": "Application pre-model refusal path; this is not evidence of actual model success.",
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:07.255Z"
+    },
+    {
+      "id": "UI-ASK-INJECTION",
+      "ac": [
+        "AC-E4-02",
+        "AC-E5-02"
+      ],
+      "description": "Submit a real question through the page; require explicit refusal and empty sources.",
+      "started_at": "2026-10-08T04:48:07.255Z",
+      "http_status": 200,
+      "course_id": 1,
+      "answer": "无法执行泄露提示词、密码、密钥或读取文件的指令。请提出当前课程相关问题。",
+      "sources": [],
+      "model_called": false,
+      "model_called_basis": "Application pre-model refusal path; this is not evidence of actual model success.",
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:07.345Z"
+    },
+    {
+      "id": "UI-ASK-MODEL",
+      "ac": [
+        "AC-E5-01",
+        "AC-E5-02"
+      ],
+      "description": "Real page asks a question with relevant material and displays answer plus citations.",
+      "started_at": "2026-10-08T04:48:07.345Z",
+      "http_status": 200,
+      "displayed_result": {
+        "courseId": 1,
+        "answer": "个人项目需提交：\n\n1. **实验报告（DOCX）**：五个个人实验报告合并为一份文档，文件名使用学号和姓名。[1]\n2. **压缩文件**：包含源码、数据库 SQL／数据库配置、环境配置说明。[1]\n3. **GitHub 链接**：由本人完成最终推送后填写提交。[1]\n\n具体截止时间尚未确认，待教师通知。[1]",
+        "sources": [
+          {
+            "courseId": 1,
+            "noticeId": 1,
+            "title": "[演示] 五个个人实验提交说明",
+            "source": "演示数据：根据用户提供的提交说明整理",
+            "text": "标题：[演示] 五个个人实验提交说明\n正文：这是一条演示通知，根据项目作者已提供的提交要求整理，用于体验集中查看信息。个人项目完成五个实验：搭建Java Web基础项目，完成Vue与REST接口交互，练习Git协作流程，加入登录权限控制，接入大模型并进行课程资料检索问答。团队项目不在本演示范围内。五个实验报告合并为一个文档，文件名使用学号和姓名。源码、数据库SQL与环境配置说明放入压缩文件；还需提交GitHub链接，由本人最终推送后填写。具体上交时间没有收到确认，界面应显示待教师通知，不能自行编造日期。查看通知时先核对信息来源，再核对最新要求。这里展示的账号、页面和课程记录只用于本机演示，不是学校正式教务平台。\n提交要求：五个个人实验报告合并为一个文档；源码、数据库配置、环境配置说明打包压缩；GitHub链接由本人推送后填写。\n报告格式：DOCX文档，文件名使用学号和姓名；五实验写在同一份报告。\n来源：演示数据：根据用户提供的提交说明整理\n",
+            "score": 0.1434458581131394,
+            "chunkIndex": 0
+          }
+        ]
+      },
+      "requires_model_log_cross_check": true,
+      "result": "PASS",
+      "ended_at": "2026-10-08T04:48:28.746Z"
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "reports/2026-10-08/student.png",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "implementation_dirty": false,
+      "captured_at": "2026-10-08T04:48:05.825Z"
+    },
+    {
+      "file": "reports/2026-10-08/teacher.png",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "implementation_dirty": false,
+      "captured_at": "2026-10-08T04:48:06.253Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-ask-no-data.png",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "implementation_dirty": false,
+      "captured_at": "2026-10-08T04:48:07.151Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-ask-cross-course.png",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "implementation_dirty": false,
+      "captured_at": "2026-10-08T04:48:07.255Z"
+    },
+    {
+      "file": "reports/2026-10-08/ui-ask-injection.png",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "implementation_dirty": false,
+      "captured_at": "2026-10-08T04:48:07.345Z"
+    },
+    {
+      "file": "reports/2026-10-08/rag.png",
+      "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+      "implementation_dirty": false,
+      "captured_at": "2026-10-08T04:48:28.746Z"
+    }
+  ],
+  "actual_model_success": true,
+  "visual_review": "Pending direct image inspection; automated checks do not prove visual quality.",
+  "ended_at": "2026-10-08T04:48:29.010Z",
+  "current_run_passed": true,
+  "version_bound_passed": true
+}

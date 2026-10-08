@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-10-08T12:42:24+0800",
+  "base_url": "http://127.0.0.1:8080",
+  "stage": "final",
+  "verified_commit": "cd7c7d7d5a12ecd17f896714986e98f893f1c0ef",
+  "implementation_dirty": true,
+  "current_run_passed": false,
+  "passed": false,
+  "tests": [
+    {
+      "test": "HEALTH-01",
+      "ac": [
+        "AC-E1-01"
+      ],
+      "group": "api",
+      "verified_commit": "cd7c7d7d5a12ecd17f896714986e98f893f1c0ef",
+      "stage": "final",
+      "started_at": "2026-10-08T12:42:20+0800",
+      "implementation_dirty": true,
+      "result": "FAIL",
+      "details": {
+        "error_type": "URLError",
+        "reason": "检查未能完成"
+      },
+      "finished_at": "2026-10-08T12:42:22+0800"
+    }
+  ],
+  "sensitive_fields_logged": false,
+  "previous_evidence": "history/20261008-124224-c9b2b92b69-api-check.json",
+  "version_bound_passed": false
+}

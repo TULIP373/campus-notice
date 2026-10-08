@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-10-08T08:52:47+0800",
+  "base_url": "http://127.0.0.1:8080",
+  "stage": "final",
+  "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+  "implementation_dirty": true,
+  "current_run_passed": false,
+  "passed": false,
+  "tests": [
+    {
+      "test": "MODEL-UNAVAILABLE-01",
+      "ac": [
+        "AC-E5-02"
+      ],
+      "group": "model",
+      "verified_commit": "b9eca9ef1644954d76402f031894c5794374ce33",
+      "stage": "final",
+      "started_at": "2026-10-08T08:52:47+0800",
+      "implementation_dirty": true,
+      "result": "FAIL",
+      "details": {
+        "error_type": "AssertionError",
+        "reason": "关闭模型服务后应为 502/503/504，不能返回伪造成功答案"
+      },
+      "finished_at": "2026-10-08T08:52:47+0800"
+    }
+  ],
+  "sensitive_fields_logged": false,
+  "previous_evidence": "history/20261008-085247-421c5648a9-model-check.json",
+  "version_bound_passed": false
+}
