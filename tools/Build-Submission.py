@@ -3,6 +3,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,16 +55,25 @@ def main():
                          '环境说明.md', 'config/database.example.properties', 'tools/Init-DemoAccounts.ps1']:
             if 'campus-notice/' + required not in contents:
                 raise RuntimeError('缺少必要提交材料')
-        # 逐项读取压缩后内容，核对与源文件一致，等价于解包内容校验。
+        # 真正解包到新的任务私有目录，再核对内容，不覆盖现有文件。
+        extraction_parent = ROOT / '.runtime' / 'archive-extracted'
+        extraction_parent.mkdir(parents=True, exist_ok=True)
+        extraction = Path(tempfile.mkdtemp(prefix='submission-', dir=extraction_parent))
+        for member in contents:
+            destination = (extraction / member).resolve()
+            if not destination.is_relative_to(extraction.resolve()):
+                raise RuntimeError('ZIP含越界路径')
+        archive.extractall(extraction)
         for name in files:
-            if archive.read('campus-notice/' + name.replace('\\', '/')) != (ROOT / name).read_bytes():
+            if (extraction / 'campus-notice' / name).read_bytes() != (ROOT / name).read_bytes():
                 raise RuntimeError('压缩后内容与源码不一致')
     record = {'verified_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip(),
               'output': OUTPUT.name, 'file_count': len(files), 'zip_integrity': 'PASS',
               'decompressed_contents_match_sources': True, 'actual_private_values_absent': True,
+              'actual_extraction_performed': True,
               'excluded': sorted(blocked), 'remote_push_executed': False, 'files': contents,
               'sha256': hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
-              'note': 'archive-check.json本身不进入ZIP，避免包含自身哈希的循环；本地Git仓库另保留完整提交历史。'}
+              'note': '已解包到任务.runtime/archive-extracted下的新目录并逐文件核对；archive-check.json本身不进入ZIP，避免包含自身哈希的循环；本地Git仓库另保留完整提交历史。'}
     PROOF.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding='utf-8')
     print('ZIP内容及私有值排除检查通过；文件数：', len(files))
 
