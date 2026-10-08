@@ -38,3 +38,5 @@
 - 短规则补充：Windows重打JAR先停止后端。下一步实验四RBAC表、登录JWT与界面角色权限。
 
 - 实验三npm ci首次被运行中的Vite占用原生模块阻止，65aff09的frontend成功文字先于实际结果，已纠正：停止Vite后重跑。失败日志保留，只有最新local-ci-frontend.log才是通过证据。
+
+- 实验四完成23项Java测试、真实登录/401/403/篡改/过期/CRUD/CORS。权限先过滤器拦截，避免MVC先校验导致400。学生与教师登录浏览器截图保存，刷新确实重新登录；下一步实验五官方Python Codex SDK与RAG。

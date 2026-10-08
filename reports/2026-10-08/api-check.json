@@ -1,58 +1,22 @@
 {
-  "generated_at": "2026-10-08T08:00:50+0800",
+  "generated_at": "2026-10-08T08:10:20+0800",
   "base_url": "http://127.0.0.1:8080",
-  "stage": "web",
-  "verified_commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
-  "implementation_dirty": false,
+  "stage": "final",
+  "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+  "implementation_dirty": true,
   "current_run_passed": true,
   "passed": true,
   "tests": [
-    {
-      "test": "HEALTH-01",
-      "ac": [
-        "AC-E1-01"
-      ],
-      "group": "api",
-      "verified_commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
-      "stage": "web",
-      "started_at": "2026-10-08T08:00:49+0800",
-      "implementation_dirty": false,
-      "result": "PASS",
-      "details": {
-        "status": "UP"
-      },
-      "finished_at": "2026-10-08T08:00:50+0800"
-    },
-    {
-      "test": "CRUD-01",
-      "ac": [
-        "AC-E1-02"
-      ],
-      "group": "api",
-      "verified_commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
-      "stage": "web",
-      "started_at": "2026-10-08T08:00:50+0800",
-      "implementation_dirty": false,
-      "result": "PASS",
-      "details": {
-        "created_read_updated_deleted": true,
-        "chinese": true,
-        "duplicate_http": 409,
-        "invalid_http": 400,
-        "deleted_http": 404
-      },
-      "finished_at": "2026-10-08T08:00:50+0800"
-    },
     {
       "test": "COURSES-01",
       "ac": [
         "AC-E2-01"
       ],
       "group": "api",
-      "verified_commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
-      "stage": "web",
-      "started_at": "2026-10-08T08:00:50+0800",
-      "implementation_dirty": false,
+      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "stage": "final",
+      "started_at": "2026-10-08T08:10:19+0800",
+      "implementation_dirty": true,
       "result": "PASS",
       "details": {
         "courses": [
@@ -62,7 +26,7 @@
           },
           {
             "course_id": 2,
-            "rows": 2
+            "rows": 3
           },
           {
             "course_id": 3,
@@ -70,7 +34,27 @@
           }
         ]
       },
-      "finished_at": "2026-10-08T08:00:50+0800"
+      "finished_at": "2026-10-08T08:10:19+0800"
+    },
+    {
+      "test": "CRUD-01",
+      "ac": [
+        "AC-E1-02"
+      ],
+      "group": "api",
+      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "stage": "final",
+      "started_at": "2026-10-08T08:10:20+0800",
+      "implementation_dirty": true,
+      "result": "PASS",
+      "details": {
+        "created_read_updated_deleted": true,
+        "chinese": true,
+        "duplicate_http": 409,
+        "invalid_http": 400,
+        "deleted_http": 404
+      },
+      "finished_at": "2026-10-08T08:10:20+0800"
     },
     {
       "test": "CORS-01",
@@ -78,39 +62,38 @@
         "AC-E2-02"
       ],
       "group": "api",
-      "verified_commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
-      "stage": "web",
-      "started_at": "2026-10-08T08:00:50+0800",
-      "implementation_dirty": false,
+      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "stage": "final",
+      "started_at": "2026-10-08T08:10:20+0800",
+      "implementation_dirty": true,
       "result": "PASS",
       "details": {
         "allowed_origin": "http://localhost:5173",
         "other_origin_has_no_allow_header": true,
         "denied_status": 403
       },
-      "finished_at": "2026-10-08T08:00:50+0800"
+      "finished_at": "2026-10-08T08:10:20+0800"
     },
     {
       "test": "NOTICES-01",
       "ac": [
-        "AC-E2-01",
-        "AC-E2-02"
+        "AC-E2-01"
       ],
       "group": "api",
-      "verified_commit": "3d5b744d6b1732808e24781a1848c626ea44769c",
-      "stage": "web",
-      "started_at": "2026-10-08T08:00:50+0800",
-      "implementation_dirty": false,
+      "verified_commit": "dd8eb6815cb1d7d3313c5bb3d1ed7fe8513c2d2f",
+      "stage": "final",
+      "started_at": "2026-10-08T08:10:20+0800",
+      "implementation_dirty": true,
       "result": "PASS",
       "details": {
         "crud": true,
         "keyword": true,
         "invalid_rejected": true
       },
-      "finished_at": "2026-10-08T08:00:50+0800"
+      "finished_at": "2026-10-08T08:10:20+0800"
     }
   ],
   "sensitive_fields_logged": false,
-  "previous_evidence": "history/20261008-080050-a17f184113-api-check.json",
-  "version_bound_passed": true
+  "previous_evidence": "history/20261008-081020-0a2c3c020c-api-check.json",
+  "version_bound_passed": false
 }

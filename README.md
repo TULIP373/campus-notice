@@ -47,3 +47,7 @@ $env:DB_PASSWORD='在本机填写数据库密码'
 最终报告将为 `202232110113余家祥.docx`，源码、SQL、配置示例和环境说明整理为 ZIP。报告中的 GitHub 地址待推送后填写。五实验与交付验收尚在进行，最终状态见 `docs/PROGRESS.md`。
 
 AI 辅助生成和检查代码、测试、文档。自动验证不能代替本人理解；提交前应阅读各层职责、复述接口调用流程，并复核报告中的真实结果。
+
+## 实验四账号与权限
+
+完成SQL01至04，构建后运行tools/Init-DemoAccounts.ps1生成仅本机的随机账号及签名密钥，密码查看.runtime/demo-accounts.json，不进提交材料。学生只读课程通知；教师可维护。登录token只在页面内存，刷新需重登，30分钟后失效。生产密钥必须至少32个UTF8字节，可通过app.jwt.secret私有properties或APP_JWT_SECRET环境变量配置。
