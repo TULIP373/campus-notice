@@ -1,33 +1,30 @@
-Reviewed-Commit: f679beba7ae984da4b16ad984968cad735ef9472
+Reviewed-Commit: 7e7443c70270bfd35a52eded66718e9aa6e2610a
 Verdict: PASS
 
-独立只读复核通过全部11条AC，并完成代码质量审查。上一轮发现的DOCX代码硬切问题已修复，没有剩余必须修复的问题。本轮未修改文件、运行构建、启动停止服务或调用模型。
+本轮独立收尾复核通过11项AC，无剩余必须修复的实现或版式缺陷。我实际只读核对DOCX、生成器、ZIP及旧构建目录，并抽看第2、10、13页；全部21页视觉审查引用独立代理 /root/polish_acceptance 原始消息，来源为 reports/2026-10-08/history/polish-visual-review-message.md，不宣称由我亲看全部页面。除将本结论写入忽略目录外，未修改文件、提交、运行构建、服务或模型。
 
-版本依据：已独立确认业务代码、测试、配置、SQL、前端及模型桥与373c8db的原证据版本相同。f679beb仅修复报告生成器和DOCX，并更新验收产物；其后至当前4f5cc6b的变化全部属于验收产物。当前工作区干净。
+版本依据：独立检查373c8db至当前HEAD，非验收变化仅为tools/Build-Report.py和DOCX。93个应用源码、测试、配置、SQL、前端、模型及运行脚本与真正成功构建的 .runtime/archive-extracted/submission-k4i34gow/campus-notice 逐字节相同。原9项业务AC的真实测试、模型、UI及重启结论继承 docs/review-record.md 的原独立review，不冒充本轮重新运行。
 
-| AC | 结论 | 核对依据 |
+| AC | 结果 | 证据与范围 |
 | --- | --- | --- |
-| AC-E1-01 | PASS | 实际依赖及Entity/Mapper/Service/Controller分层符合Java17、Spring Boot3、Web、MyBatis、MySQL要求。`resume-backend-build.log`及`resume-archive-backend-build.log`均记录40项测试、0失败、0错误和BUILD SUCCESS；实际JAR启动日志与独立UP健康探针相符。 |
-| AC-E1-02 | PASS | 原始及恢复后的真实HTTP证据覆盖中文CRUD、重复409、非法400、删除后404；`final-restart.json`记录MySQL与后端均重启，随后持久化账号读取和清理通过。实际Mapper使用MySQL参数绑定，User JSON排除密码哈希。 |
-| AC-E2-01 | PASS | 实际Vue/Axios调用REST，`ui-check.json`记录三门课程、通知资料切换、详情字段、教师新增编辑、刷新重登录后读取更新及测试数据删除。已亲自查看学生与教师截图，角色、维护入口和详情清晰可读。 |
-| AC-E2-02 | PASS | 新旧真实接口证据均验证指定来源允许、其他来源403且无允许头；前后端独立构建通过。已对照实际Controller、安全过滤器、错误处理和OpenAPI的路径、状态及响应结构。 |
-| AC-E3-01 | PASS | 独立检查Git历史，带实验编号的非空中文提交超过20条。真实双父提交、分支同一行修改、冲突日志及合并结果相互吻合。PR模板、构建测试CI存在；无Git remote，文档如实说明未推送及未执行远程PR、云端CI。 |
-| AC-E4-01 | PASS | 实际MySQL角色权限结构、BCrypt、有限期HS256 JWT、Spring Security及@PreAuthorize符合规格。数据库安全记录和真实HTTP证据覆盖登录、401/403、学生写入拒绝、篡改和有效签名的过期令牌。 |
-| AC-E4-02 | PASS | 令牌只存模块内存；真实UI检查验证浏览器存储及Cookie无令牌、刷新需登录。输入0/1001拒绝、1/1000接受，SQL注入文本按数据处理。资料内攻击的真实模型回答未执行恶意指令。独立扫描最新ZIP、DOCX内部成员及全部分支394个Git blob，6项实际私有值均无匹配。 |
-| AC-E5-01 | PASS | 实际代码和有效单测覆盖450字切块、80字重叠、TF-IDF、余弦前三块及课程过滤。已核对真实System/User练习、SDK ask(question)→Thread.run路径、模型响应和SDK事件。资料内攻击确实进入检索原文；答案事实、来源及引用一致。已亲自查看真实RAG截图及展开原文。 |
-| AC-E5-02 | PASS | 缺资料、跨课程、直接注入为明确本地拒答；真实资料内攻击回答只保留蓝桉验收清单、TXT、待教师通知，引用有效且自己的资料清理204/404。实际停模型后返回503，无固定替代答案。反思记录实际虚构引用观察及修正，没有伪造模型错误案例。 |
-| AC-DOC-01 | PASS | 单一DOCX包含准确身份、五实验步骤、设计、代码、真实截图结果及AI反思。独立从生成器13处摘录调用重建预期文本，与DOCX79段代码按路径、顺序和完整源码行逐段一致，无硬换行破坏。已分批亲自查看全部7个改变页；另11张PNG独立确认与上轮逐字节相同。18页、目录3/5/8/10/14和最新报告SHA均吻合。 |
-| AC-PKG-01 | PASS | 独立读取最新300项ZIP：完整性正常，无重复项、越界或禁止路径，必需材料齐全，每个现存对应文件逐字节一致；包内DOCX SHA与已审报告一致。ZIP SHA同时匹配归档记录和解包构建记录。实际解包后的Java verify40项及npm ci/build通过。当前Git工作区干净，未配置远程。 |
+| AC-E1-01 | PASS | 未变分层与依赖；resume-backend-build.log、resume-archive-backend-build.log原真实Java40测试零失败、BUILD SUCCESS及JAR启动证据继续有效。 |
+| AC-E1-02 | PASS | 继承api-check.json、final-restart.json真实MySQL中文CRUD、409/400/404及重启持久化；参数绑定和密码保护实现字节未变。 |
+| AC-E2-01 | PASS | 继承ui-check.json真实三课程、资料详情、教师维护刷新与学生教师截图；Vue/Axios实现未变。 |
+| AC-E2-02 | PASS | 继承真实CORS指定来源允许、其他403、OpenAPI和前后端独立构建；相关源码未变。 |
+| AC-E3-01 | PASS | 继承真实中文实验提交、双父冲突合并、PR模板和CI审查；模板及CI字节一致，远程未执行如实说明。 |
+| AC-E4-01 | PASS | 继承MySQL角色权限、BCrypt、JWT及方法授权，真实登录、401/403、篡改、过期和学生写入拒绝证据。 |
+| AC-E4-02 | PASS | 内存令牌、输入边界和注入证据继承；本轮另实际在内存扫描全部ZIP文件及DOCX展开成员，私有值无匹配。 |
+| AC-E5-01 | PASS | 未变450/80切块、TF-IDF、余弦Top3与课程过滤；原真实System/User、SDK调用事件、模型答案和原文引用证据继续有效。 |
+| AC-E5-02 | PASS | 继承缺资料、跨课程、直接注入拒答、真实资料内注入及停模型503；实际错误观察如实记录，未重跑模型。 |
+| AC-DOC-01 | PASS | 实际21页、身份正确、五实验六栏目、5/30/15标题；字体、目录、模板、13摘录79完整源行核对通过，视觉来源及抽查见下。 |
+| AC-PKG-01 | PASS | 实读最新ZIP329项，testzip通过、安全唯一成员、必要材料齐全、与全部tracked文件除自引用archive-check逐字节相同；旧解包Java40项及npm ci/build证据适用93个未变应用文件。 |
 
-代码质量第二阶段通过。已检查后端职责分层、参数化SQL、输入边界、密码与JWT处理、权限前置和统一异常；前端会话与请求失效保护、课程切换、卸载取消及文本转义；模型桥的环境清理、权限检查、事件白名单和明确故障；初始化与服务脚本的项目边界。未发现需要拦截交付的源码问题。
+实际文档核对：Normal为宋体12pt/Times New Roman，Heading1黑体16pt加粗、Heading2黑体12pt加粗、Heading3黑体11pt加粗，outlineLvl为0/1/2；w:rFonts明确包含eastAsia及ascii/hAnsi/cs，Report Code为Consolas9pt。生成器font函数正确取得rPr并清除主题覆盖，旧缺失中文字体问题已修复。13处b.code由AST按JAVA及字符串组合、start/end/count重建，textwrap.dedent后依路径与顺序对比79完整源行，全部一致，无硬切。短表cantSplit及keepnext实际符合整表保留逻辑；目录右对齐点引导tab与实际PDF起页3/6/10/12/16一致。模板保留部件和页面几何一致。
 
-修复记录：上一轮AC-DOC-01失败原文已保存于`reports/2026-10-08/history/review-904a577-FAIL.md`。本轮独立确认缺陷已经修复，没有修改原验收口径。
+版式审美：我亲看目录、实验三首页和角色权限表页，黑体层级清楚、正文阅读正常，目录单双位页码右端齐整，权限短表无截断。polish_acceptance已每批3张查看全部21页，明确无必修缺陷，实验三10—11页自然结束、角色表完整在13页、图注与图片同页；其原始消息已保存。未把Word导出称为canonical renderer成功。
 
-未核实事项与边界：
+实际包内DOCX与已审文件同SHA：7e00c1213f0470260da260460231c09ae2781570b1ad37b06d5a567df807311b。ZIP SHA匹配archive-check.json。导入Build-Submission.py的private_values仅在内存扫描ZIP全部内容及DOCX内部成员，无匹配，未输出秘密。代码质量第二阶段：本次字体辅助函数、目录tab、短表分页和完整摘录无新增阻断；未变业务源码沿用原独立质量审查。
 
-- 本轮未重新调用真实模型，使用已亲自核对且业务代码未变化的原响应和SDK证据；模型健康接口不算生成验证。
-- 兼容API Key模式、远程PR、云端CI及学生本人理解程度未验证，规格和报告已明确说明。
-- 引用编号有效不等于自动证明每项事实；资料内注入通过只证明已执行用例。
-- 本轮亲自查看全部7个改变页，没有重新载入另外11页；其字节与此前完整18页检查版本相同。
+增量收尾要求：当前document-check/部分QA仍写PENDING，polish-package保留旧SHA，PROGRESS仍称18页，原review及验收报告尚未绑定本版；这些记录不能直接用于最终交付。root必须原样保存本结论，更新document-check及最新字体/目录/短表视觉结果、polish-package的新SHA与93文件依据、PROGRESS为21页及本版，更新docs三个验收文件并真实运行harness final。只增补reports及docs/review-record.md、docs/acceptance-report.md、docs/PROGRESS.md后刷新ZIP，实际复查清单、安全、私有值、逐文件字节及同SHA报告，最后提交并确认clean。当前唯一未跟踪变化为新增视觉消息，尚不在329项ZIP内；须随最后验收材料入包。该增量范围无需再跑业务或模型；任何应用、生成器或DOCX变化均须重新验证受影响AC。
 
-后续可仅增补`reports/`、`docs/review-record.md`、`docs/acceptance-report.md`、`docs/PROGRESS.md`中的验收产物并刷新ZIP。该范围内无需重复业务构建，但必须实际校验新ZIP完整性、清单、对应文件字节、包内已审DOCX及源码不变、私有值排除，并记录新SHA，最后确认工作区干净。任何源码、测试、配置、SQL、报告生成器或DOCX再变化，都不属于该增量范围，必须重新验证受影响AC并复核。
+未核实：兼容API Key模式、远程PR、云端CI及本人理解程度；本轮未重跑业务构建、浏览器、数据库或模型。继承真实证据以已核实字节不变为边界，不将模型健康当生成成功；当前通过是本版独立review，最终交付仍须完成上述真实收尾。

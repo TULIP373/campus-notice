@@ -1,5 +1,5 @@
 {
-  "verified_commit": "562d47a172874a302977113a0c9f0479838eeea4",
+  "verified_commit": "7e7443c70270bfd35a52eded66718e9aa6e2610a",
   "result": "PASS",
   "actual_previous_built_extraction": "D:\\360MoveData\\Users\\86135\\Desktop\\2026-2027-1\\软件项目实训（二） 「考查」\\个人项目_课程通知平台\\campus-notice\\.runtime\\archive-extracted\\submission-k4i34gow\\campus-notice",
   "application_files_checked": 93,
@@ -12,8 +12,10 @@
   "business_build_repeated_for_typography_change": false,
   "latest_zip_actual_extraction_check": "archive-check.json",
   "current_zip_contents_match_current_files": true,
-  "report_sha256": "1189166747420f53539c62c244d8cd3b1a2769be46758f6102c8c3eb95ad3d28",
-  "zip_sha256": "2a0ee692bdf3a677aef34ed2cf79acab63fbcd22d0d51b04cbf8407c3db21a7a",
-  "new_generator_and_docx_require_fresh_visual_review": true,
-  "remote_push_executed": false
+  "report_sha256": "7e00c1213f0470260da260460231c09ae2781570b1ad37b06d5a567df807311b",
+  "new_generator_and_docx_require_fresh_visual_review": false,
+  "remote_push_executed": false,
+  "visual_review": "PASS docs/review-record.md",
+  "reviewed_zip_sha256": "c2d14a7d8b8aef3e58737e322f67a2cb00fafaaae1ce7c6d4db9b44ba3625736",
+  "final_zip_sha256_source": "archive-check.json; final ZIP adds acceptance evidence only"
 }

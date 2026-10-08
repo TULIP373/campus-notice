@@ -1,7 +1,7 @@
 {
-  "verified_commit": "44da73f1445301d6c28153cc1986068127b5d068",
+  "verified_commit": "7e7443c70270bfd35a52eded66718e9aa6e2610a",
   "output": "202232110113余家祥_源代码.zip",
-  "file_count": 329,
+  "file_count": 333,
   "zip_integrity": "PASS",
   "decompressed_contents_match_sources": true,
   "actual_private_values_absent": true,
@@ -231,10 +231,13 @@
     "campus-notice/reports/2026-10-08/history/20261008-124755-f29f2c51f7-security-check.json",
     "campus-notice/reports/2026-10-08/history/polish-first-isolated-reflection.png",
     "campus-notice/reports/2026-10-08/history/polish-first-typography-check.json",
+    "campus-notice/reports/2026-10-08/history/polish-initial-package-check.json",
     "campus-notice/reports/2026-10-08/history/polish-review-04fa29e-FAIL.md",
+    "campus-notice/reports/2026-10-08/history/polish-visual-review-message.md",
     "campus-notice/reports/2026-10-08/history/pre-polish-acceptance-report.md",
     "campus-notice/reports/2026-10-08/history/pre-polish-document-check.json",
     "campus-notice/reports/2026-10-08/history/pre-polish-review-record.md",
+    "campus-notice/reports/2026-10-08/history/pre-polish-version-binding.json",
     "campus-notice/reports/2026-10-08/history/pre-resume-archive-check.json",
     "campus-notice/reports/2026-10-08/history/review-904a577-FAIL.md",
     "campus-notice/reports/2026-10-08/material-preflight/api-check.json",
@@ -248,6 +251,7 @@
     "campus-notice/reports/2026-10-08/model-semantic-review.json",
     "campus-notice/reports/2026-10-08/openapi-check.json",
     "campus-notice/reports/2026-10-08/persistence-state.json",
+    "campus-notice/reports/2026-10-08/polish-final-delivery-check.json",
     "campus-notice/reports/2026-10-08/polish-package-check.json",
     "campus-notice/reports/2026-10-08/prompt-check.json",
     "campus-notice/reports/2026-10-08/rag-unavailable.png",
@@ -347,6 +351,6 @@
     "campus-notice/tools/harness-check.ps1",
     "campus-notice/环境说明.md"
   ],
-  "sha256": "c2d14a7d8b8aef3e58737e322f67a2cb00fafaaae1ce7c6d4db9b44ba3625736",
+  "sha256": "960bdecdda615a53c4a38db0930bbbe0425b876e0e4183f3ad4478a2f6499d4a",
   "note": "已解包到任务.runtime/archive-extracted下的新目录并逐文件核对；archive-check.json本身不进入ZIP，避免包含自身哈希的循环；本地Git仓库另保留完整提交历史。"
 }

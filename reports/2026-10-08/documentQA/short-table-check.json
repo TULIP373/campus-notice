@@ -27,5 +27,6 @@
     21
   ],
   "short_role_permission_table_kept_on_one_page": true,
-  "independent_visual_review": "PENDING"
+  "independent_visual_review": "PASS changed pages12/13/14 reviewed; short permissions table whole on page13",
+  "verified_commit": "7e7443c70270bfd35a52eded66718e9aa6e2610a"
 }

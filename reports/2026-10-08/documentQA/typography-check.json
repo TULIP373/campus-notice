@@ -95,7 +95,8 @@
   },
   "report_sha256": "7e00c1213f0470260da260460231c09ae2781570b1ad37b06d5a567df807311b",
   "cover_first_page_has_no_folio": true,
-  "visual_review": "PENDING independent full-page visual review",
+  "visual_review": "PASS independent all21 pages; docs/review-record.md",
   "regression_before_result": "FAIL",
-  "authoring_marker": "executed once before current-request DOCX editing"
+  "authoring_marker": "executed once before current-request DOCX editing",
+  "verified_commit": "7e7443c70270bfd35a52eded66718e9aa6e2610a"
 }

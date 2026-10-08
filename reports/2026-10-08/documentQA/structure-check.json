@@ -30,12 +30,13 @@
     "word/media/image5.png",
     "word/footer1.xml"
   ],
-  "render_status": "PENDING",
+  "render_status": "PASS all21 pages visually reviewed",
   "intentional_changes": [
     "身份填写",
     "五实验正文及真实截图",
     "目录真实页码",
     "PAGE页脚与打开时更新字段",
     "按用户2026-10-08要求精修标题层级、正文、表格图注和每实验起页"
-  ]
+  ],
+  "verified_commit": "7e7443c70270bfd35a52eded66718e9aa6e2610a"
 }

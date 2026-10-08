@@ -1,4 +1,4 @@
-Verified-Commit: f679beba7ae984da4b16ad984968cad735ef9472
+Verified-Commit: 7e7443c70270bfd35a52eded66718e9aa6e2610a
 
 # 最终验收报告
 
@@ -15,14 +15,16 @@ Verified-Commit: f679beba7ae984da4b16ad984968cad735ef9472
 | AC-E4-02 | PASS | `reports/2026-10-08/security-check.json` `reports/2026-10-08/ui-check.json` `reports/2026-10-08/model-check.json` `reports/2026-10-08/archive-check.json` | 内存令牌及刷新清除，输入与注入检查；Git、DOCX内部和ZIP按实际私有值扫描。 |
 | AC-E5-01 | PASS | `reports/2026-10-08/model-check.json` `reports/2026-10-08/final-sdk-check.json` `reports/2026-10-08/prompt-check.json` `reports/2026-10-08/rag.png` | 原真实模型及SDK记录与未变化的生产代码对应；450/80 TF-IDF课程Top3检索和原文引用已验证。 |
 | AC-E5-02 | PASS | `reports/2026-10-08/model-check.json` `reports/2026-10-08/model-semantic-review.json` `reports/2026-10-08/ai-reflection.md` | 缺资料/跨课/注入拒答，资料内真实攻击不执行，停服503无假答案；实际引用问题及修正如实记录。 |
-| AC-DOC-01 | UNVERIFIED | `reports/2026-10-08/document-check.json` `reports/2026-10-08/documentQA/code-excerpt-check.json` `reports/2026-10-08/documentQA/structure-check.json` | 单一18页五实验报告。修复代码硬切，79段摘录完整源行匹配；7个变化页目视复核，另11页与此前逐页图字节一致。 |
-| AC-PKG-01 | UNVERIFIED | `reports/2026-10-08/archive-check.json` `reports/2026-10-08/resume-archive-build-check.json` `reports/2026-10-08/resume-archive-backend-build.log` `reports/2026-10-08/resume-archive-frontend-build.log` | 新源码包实际解包逐文件校验、40项Java测试及npm ci/build通过；终版仅增补验收产物，再作真实内容和排密校验并收尾提交。 |
+| AC-DOC-01 | PASS | `reports/2026-10-08/document-check.json` `reports/2026-10-08/documentQA/typography-check.json` `reports/2026-10-08/documentQA/code-excerpt-check.json` `reports/2026-10-08/documentQA/toc-polish-check.json` | 单一21页五实验报告；实际宋体12磅正文和三级黑体标题，目录等距点引导与实测页码一致。13处79段摘录完整源行匹配；独立逐页视觉复核通过，消除实验三孤立尾页。 |
+| AC-PKG-01 | PASS | `reports/2026-10-08/archive-check.json` `reports/2026-10-08/polish-package-check.json` `reports/2026-10-08/resume-archive-build-check.json` | 精修报告及生成器入新ZIP，真实解包逐文件校验与私有值排除通过。93个应用源码/测试/配置/SQL/前端/模型及运行脚本与此前实际构建解包版逐字节一致，继承40项Java测试及npm ci/build证据。 |
 
 ## 证据版本和复核范围
 
-`reports/2026-10-08/final-version-binding.json`列明版本对应关系。373c8db至f679beb的非验收产物变更仅为报告生成器与DOCX；应用、测试、数据库、配置、前端和模型桥保持一致。原真实模型、重启、UI和安全证据仍适用；本轮额外重跑40项Java测试、Vue构建与10项真实接口冒烟。修复报告后再次实际解包构建。其后仅允许项目流程列明的验收产物变更。
+`reports/2026-10-08/final-version-binding.json`列明版本对应关系。373c8db至本轮精修版的非验收变更仅为报告生成器与DOCX；应用、测试、数据库、配置、前端和模型桥不变。此前恢复阶段实际重跑40项Java测试、Vue构建与10项API冒烟，并在真实解包版完成Java40项及npm ci/build。本次字体排版请求重新检验DOCX实际字体、结构、源码摘录、21页渲染及目录；独立review绑定7e7443c，后续仅允许验收产物变更。
 
-本轮未重复真实模型调用；当前8787健康为not_checked，仅表示HTTP服务已恢复，不冒充本轮生成验证。独立复核重新查看原模型完整回答、攻击原文、SDK事件及未变化的调用代码。
+本次未重复真实模型或业务构建。原真实模型、重启、UI和安全证据仍对应未变实现；93个应用及运行文件与此前成功构建的真实解包版逐字节相同。当前8787健康not_checked仅表示HTTP启动，不冒充新模型生成验证。
+
+初稿字体辅助函数未写入eastAsia，旧自动字体验证误判PASS；独立review判FAIL后修复，并保留严格断言的旧版FAIL与新版PASS。实验三稀疏尾页已消除。目录双位页码点引导及间距经实际渲染发现并修复，角色权限三行短表现于第13页完整同页；最终21页全部目视通过；旧失败原文与修复前图完整留于history。
 
 ## 已知边界
 
