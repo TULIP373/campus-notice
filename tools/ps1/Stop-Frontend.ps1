@@ -1,5 +1,5 @@
-$ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+﻿$ErrorActionPreference = 'Stop'
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $listeners = Get-NetTCPConnection -State Listen -LocalPort 5173 -ErrorAction SilentlyContinue
 if (-not $listeners) { Write-Host 'Frontend is not running.'; return }
 foreach ($listener in $listeners) {

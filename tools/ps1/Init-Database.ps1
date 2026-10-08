@@ -1,9 +1,9 @@
-param(
+﻿param(
     [Parameter(Mandatory = $true)]
     [string]$SqlFile
 )
 $ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $databaseRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot 'database'))
 $candidatePath = if ([IO.Path]::IsPathRooted($SqlFile)) { $SqlFile } else { Join-Path $projectRoot $SqlFile }
 $sqlPath = [IO.Path]::GetFullPath($candidatePath)

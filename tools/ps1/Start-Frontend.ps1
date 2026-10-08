@@ -1,5 +1,5 @@
-$ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+﻿$ErrorActionPreference = 'Stop'
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $frontendRoot = Join-Path $projectRoot 'frontend'
 $runtimeRoot = Join-Path $projectRoot '.runtime'
 New-Item -ItemType Directory -Path $runtimeRoot -Force | Out-Null

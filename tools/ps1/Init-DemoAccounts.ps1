@@ -1,6 +1,6 @@
-param([switch]$SkipRun)
+﻿param([switch]$SkipRun)
 $ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $runtimeRoot = Join-Path $projectRoot '.runtime'
 New-Item -ItemType Directory -Path $runtimeRoot -Force | Out-Null
 function New-PrivateValue {

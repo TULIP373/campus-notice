@@ -17,15 +17,13 @@ def submission_file(name):
         return True
     if len(path.parts) == 1:
         return name in {'.gitattributes', '.gitignore', 'pom.xml', 'mvnw', 'mvnw.cmd',
-                        'README.md', '环境说明.md'}
+                        'README.md', '环境说明.md', 'start.cmd', 'stop.cmd'}
     if path.parts[0] == 'deliverables':
         return path.suffix == '.docx'
     if path.parts[0] == 'docs':
         return name in {'docs/openapi.json', 'docs/开发约定.md', 'docs/提示词练习.md'}
     if path.parts[0] == 'tools':
-        return path.name.startswith(('Start-', 'Stop-', 'Init-')) or path.name in {
-            'run.cmd', 'start.cmd', 'start-backend.cmd', 'start-frontend.cmd',
-            'start-model.cmd', 'stop.cmd', 'Build-Submission.py'}
+        return (len(path.parts) == 3 and path.parts[1] == 'ps1' and path.suffix == '.ps1') or name == 'tools/Build-Submission.py'
     return False
 
 
@@ -76,9 +74,9 @@ def main():
             raise RuntimeError('ZIP校验失败')
         contents = archive.namelist()
         for required in ['pom.xml', 'frontend/package-lock.json', 'database/01-users.sql', 'database/04-security.sql',
-                         '环境说明.md', 'config/database.example.properties', 'tools/Init-DemoAccounts.ps1',
-                         'tools/start.cmd', 'tools/start-backend.cmd', 'tools/start-frontend.cmd', 'tools/stop.cmd',
-                         'tools/Start-Demo.ps1', 'src/test/java/com/example/campusnotice/service/RagServiceTest.java',
+                         '环境说明.md', 'config/database.example.properties', 'tools/ps1/Init-DemoAccounts.ps1',
+                         'start.cmd', 'stop.cmd', 'tools/ps1/Start-Demo.ps1',
+                         'src/test/java/com/example/campusnotice/service/RagServiceTest.java',
                          'deliverables/202232110113余家祥.docx']:
             if 'campus-notice/' + required not in contents:
                 raise RuntimeError('缺少必要提交材料')

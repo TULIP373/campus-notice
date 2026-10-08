@@ -1,5 +1,5 @@
-$ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+﻿$ErrorActionPreference = 'Stop'
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $runtimeRoot = Join-Path $projectRoot '.runtime'
 $runtimeAlias = Join-Path $env:USERPROFILE '.local\campus-notice-runtime'
 if (-not (Test-Path -LiteralPath $runtimeAlias)) {

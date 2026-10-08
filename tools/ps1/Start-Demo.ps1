@@ -1,11 +1,11 @@
-param(
+﻿param(
     [ValidateSet('All', 'Backend', 'Frontend', 'Model', 'Stop')]
     [string]$Mode = 'All',
     [switch]$NoBrowser,
     [switch]$NoPause
 )
 $ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 
 function Test-RunningService([int]$Port, [string]$ProcessName, [string]$Url) {
     $listeners = @(Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue)

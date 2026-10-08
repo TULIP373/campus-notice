@@ -4,7 +4,7 @@ Java 后端通过本地8787端口请求模型服务，发送课程资料和问�
 
 ## 本机启动
 
-双击 tools 文件夹中的 `tools\start-model.cmd`。前后端仍用 `tools\start.cmd` 启动。
+在项目根目录的 PowerShell 中运行 `.\tools\ps1\Start-Demo.ps1 -Mode Model`。前后端用根目录的 `start.cmd` 启动。
 
 `GET /health` 表示 HTTP 服务已经启动，实际能否回答需要在页面提问确认。模型不可用时返回错误，不自动更换接口。
 
@@ -15,10 +15,10 @@ Java 后端通过本地8787端口请求模型服务，发送课程资料和问�
 ```powershell
 python -m venv .runtime/sdk-research
 .runtime/sdk-research/Scripts/python.exe -m pip install -r model-service/requirements.txt
-.\tools\Start-ModelBridge.ps1
+.\tools\ps1\Start-ModelBridge.ps1
 ```
 
-需要先在本机完成 Codex 登录。停止模型服务使用 `.\tools\Stop-ModelBridge.ps1`。
+需要先在本机完成 Codex 登录。停止模型服务使用 `.\tools\ps1\Stop-ModelBridge.ps1`。
 
 启动后可做权限检查，此命令不会请求模型：
 

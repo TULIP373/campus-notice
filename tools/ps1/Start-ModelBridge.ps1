@@ -1,6 +1,6 @@
-param([string]$Python = '', [string]$CodexBin = '')
+﻿param([string]$Python = '', [string]$CodexBin = '')
 $ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $runtimeRoot = Join-Path $projectRoot '.runtime'
 $script = Join-Path $projectRoot 'model-service\bridge.py'
 if (-not $Python) { $Python = Join-Path $runtimeRoot 'sdk-research\Scripts\python.exe' }

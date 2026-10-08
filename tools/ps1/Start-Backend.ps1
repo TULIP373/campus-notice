@@ -1,6 +1,6 @@
-param([switch]$SkipBuild)
+﻿param([switch]$SkipBuild)
 $ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $runtimeRoot = Join-Path $projectRoot '.runtime'
 New-Item -ItemType Directory -Path $runtimeRoot -Force | Out-Null
 $javaHomeCandidates = @($env:JAVA_HOME, (Join-Path $env:USERPROFILE '.jdks\ms-17.0.20.1'))

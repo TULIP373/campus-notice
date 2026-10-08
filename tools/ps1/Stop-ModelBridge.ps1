@@ -1,5 +1,5 @@
-$ErrorActionPreference = 'Stop'
-$projectRoot = Split-Path -Parent $PSScriptRoot
+﻿$ErrorActionPreference = 'Stop'
+$projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 $script = Join-Path $projectRoot 'model-service\bridge.py'
 $recordPath = Join-Path $projectRoot '.runtime\model-bridge-process.json'
 if (-not (Test-Path -LiteralPath $recordPath)) { Write-Host 'No model bridge process record.'; return }
