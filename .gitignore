@@ -38,3 +38,8 @@ build/
 # Vue local dependencies and build output
 frontend/node_modules/
 frontend/dist/
+
+# Python SDK bridge and check caches
+__pycache__/
+*.pyc
+.venv/
