@@ -24,6 +24,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
 
 @Configuration
 @EnableMethodSecurity
@@ -68,6 +69,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/health").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        // 先在过滤器拒绝无权限写入，再进入MVC解析请求与字段校验。
+                        .requestMatchers("/api/users", "/api/users/**").access(new WebExpressionAuthorizationManager("hasRole('TEACHER') and hasAuthority('user:write')"))
+                        .requestMatchers(HttpMethod.POST, "/api/notices", "/api/notices/**").access(new WebExpressionAuthorizationManager("hasRole('TEACHER') and hasAuthority('notice:write')"))
+                        .requestMatchers(HttpMethod.PUT, "/api/notices", "/api/notices/**").access(new WebExpressionAuthorizationManager("hasRole('TEACHER') and hasAuthority('notice:write')"))
+                        .requestMatchers(HttpMethod.DELETE, "/api/notices", "/api/notices/**").access(new WebExpressionAuthorizationManager("hasRole('TEACHER') and hasAuthority('notice:write')"))
                         .requestMatchers("/api/**").authenticated().anyRequest().denyAll())
                 .exceptionHandling(errors -> errors
                         .authenticationEntryPoint((request, response, exception) -> {
