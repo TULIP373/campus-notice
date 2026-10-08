@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "课程通知平台接口",
-    "version": "0.4.0",
-    "description": "实验四已加入JWT，除健康检查和登录外需要Bearer令牌。用户接口及通知写操作仅教师且具备对应权限。错误为message JSON。"
+    "version": "0.5.0",
+    "description": "JWT登录，课程通知CRUD及当前课程原文问答。健康检查和登录公开，其余需Bearer令牌。通知写操作仅教师。问答需ask:use；模型不可用不返回伪造回答。"
   },
   "servers": [
     {
@@ -926,6 +926,104 @@
           }
         }
       }
+    },
+    "/api/ask": {
+      "post": {
+        "summary": "当前课程检索问答",
+        "description": "先仅检索当前课程资料，最多3个原文片段。无资料、跨课程和明显注入明确拒答；SDK错误返回非成功状态。仅本地演示，引用编号检查不等于事实真实性保证。",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "有效回答或明确拒答",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "问题格式无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "需要登录或令牌无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "没有ask:use权限",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "课程不存在",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "模型格式或引用无效",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "模型桥无法连接或返回错误",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "模型超时",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1180,6 +1278,78 @@
           },
           "user": {
             "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "AskRequest": {
+        "type": "object",
+        "required": [
+          "courseId",
+          "question"
+        ],
+        "properties": {
+          "courseId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      },
+      "RagSource": {
+        "type": "object",
+        "properties": {
+          "courseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "noticeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number",
+            "format": "double"
+          },
+          "chunkIndex": {
+            "type": "integer"
+          }
+        }
+      },
+      "AskResponse": {
+        "type": "object",
+        "required": [
+          "courseId",
+          "answer",
+          "sources"
+        ],
+        "properties": {
+          "courseId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "answer": {
+            "type": "string",
+            "description": "模型事实用[n]引用；拒答时sources为空"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RagSource"
+            }
           }
         }
       }

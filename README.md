@@ -1,53 +1,79 @@
 # 课程通知平台
 
-余家祥，202232110113，软外241。五个个人实验在同一个小项目中逐步完成。
+余家祥，202232110113，软外241。五个个人实验在同一个项目中按步骤开发，中文 Git 提交以 `[实验一-序号]` 至 `[实验五-序号]` 区分实验。
 
-学生按课程查看通知、提交要求、报告格式、截止时间和学习资料；教师手动维护内容。问答根据当前课程资料检索并给出来源。开发与验证以 `docs/teacher-steps.md` 和 `docs/acceptance.md` 为准。
+学生按课程集中查看老师的通知、提交要求、报告格式、截止时间和学习资料。教师手动维护通知。三门演示课程：软件项目实训（二）、软件质量保证与测试、数据库原理。当前课程问答先检索本课程原文，再请求模型回答并显示引用。
 
-## 当前阶段
+## 当前验证状态
 
-实验一已验证用户 CRUD、BCrypt 和真实 MySQL 重启持久化；实验二已完成 Vue 页面、课程通知维护、Axios 联调、CORS 和 OpenAPI。后续实验仍按顺序进行。
+实验一至四已完成真实 MySQL CRUD、Vue/Axios 联调、真实 feature 分支冲突合并、JWT/BCrypt/RBAC。40 项 Java 测试通过。实验五的检索、问答接口、页面与 SDK 桥已实现，真实模型仍待 Windows 权限探针通过；单测中的 HTTP 桩不是实际模型回答。最终检查以 `docs/acceptance-report.md` 和 `docs/PROGRESS.md` 为准。
 
-## 本机实验一运行
+## 这台电脑启动
 
-在此项目目录使用 PowerShell：
+在项目目录打开 PowerShell。数据库和私有配置已准备好，日常启动不需要再次导入 SQL：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Database.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Init-Database.ps1 -SqlFile database/01-users.sql
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Init-Database.ps1 -SqlFile database/02-courses-notices.sql
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Init-Database.ps1 -SqlFile database/03-demo-content.sql
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Backend.ps1
-powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Frontend.ps1
+./tools/Start-Database.ps1
+./tools/Start-Backend.ps1
+./tools/Start-Frontend.ps1
 ```
 
-健康接口为 `http://127.0.0.1:8080/api/health`。用户接口 `/api/users` 与 `/api/users/{id}`，方法 GET、POST、PUT、DELETE；后续实验四加入登录和教师权限。用户名、姓名、角色与密码由请求填写，数据库仅保存 BCrypt 哈希，接口不返回密码哈希。
+打开 `http://127.0.0.1:5173/`。账号密码在本机 `.runtime/demo-accounts.json`，该文件不提交；教师和学生分别登录体验。刷新页面会清除内存中的登录令牌，需重新登录。后端 `http://127.0.0.1:8080/api/health` 不要求登录，其余业务接口需要 JWT。
 
-本机数据库软件、数据、私有配置在 `.runtime`，已被 Git 忽略。ASCII 目录联接 `.local/campus-notice-runtime` 指向同一份本机文件，解决 Windows MySQL 对中文路径的兼容问题。
+```powershell
+./tools/Stop-Frontend.ps1
+./tools/Stop-Backend.ps1
+./tools/Stop-Database.ps1
+```
 
-页面地址为 `http://127.0.0.1:5173/`；前端单独运行，后端在8080。通知接口与错误格式见 `docs/openapi.json`。Windows 重新打包前先运行 `tools/Stop-Backend.ps1`，否则运行中的 JAR 会被占用。
+Windows 重打 JAR 前先停止后端；执行 `npm ci` 前先停止前端，避免正在使用的文件被占用。本机 `.runtime` 包含开发软件、数据库数据和私有配置，Git/ZIP 都排除它。ASCII 目录联接 `.local/campus-notice-runtime` 指向同一份运行文件，解决 MySQL 的中文路径兼容问题。
 
-## 其他电脑配置
+## 其他电脑从源码运行
 
-安装 JDK17、MySQL8、Node.js；Maven 使用仓库里的 Wrapper。MySQL 创建 `campus_notice` 数据库和单独的开发账户，按 `database/README.md` 执行 SQL。通过 `DB_URL`、`DB_USER`、`DB_PASSWORD` 环境变量配置数据源，或自行创建忽略提交的 `.runtime/database.properties`。不必使用本机 `.runtime` 程序，也不要复制其他人的私有账户文件。
+1. 安装 JDK17、MySQL8、Node.js24、Python3.11+（Python仅模型桥需要）。Maven 使用仓库里的 Wrapper，不必另外安装。
+2. 用 Navicat 或 MySQL 客户端创建 `campus_notice` 数据库和单独的开发账户，再依次执行 `database/01-users.sql`、`02-courses-notices.sql`、`03-demo-content.sql`、`04-security.sql`。SQL 不在后端启动时自动执行。
+3. 自行在项目根目录创建 `.runtime`，复制 `config/database.example.properties` 为 `.runtime/database.properties`，填写自己的数据库地址、账户、密码；复制 `config/security.example.properties` 为 `.runtime/security.properties`，填写随机 JWT 密钥（至少32个UTF8字节）。这些私有文件已被忽略。也可以使用下面的环境变量。
+4. 设置 Java，构建后执行初始化脚本，生成本机随机学生、教师演示账号：
 
 ```powershell
 $env:JAVA_HOME='你的JDK17目录'
 $env:DB_URL='jdbc:mysql://127.0.0.1:3306/campus_notice?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai'
 $env:DB_USER='你的数据库开发账户'
 $env:DB_PASSWORD='在本机填写数据库密码'
-.\mvnw.cmd -B -ntp verify
-.\mvnw.cmd spring-boot:run
+$env:APP_JWT_SECRET='在本机生成并填写至少32字节的随机密钥'
+./mvnw.cmd -B -ntp verify
+./tools/Init-DemoAccounts.ps1
+./tools/Start-Backend.ps1 -SkipBuild
 ```
 
-## Git 与提交材料
+数据库使用你自行安装的服务；`Start-Database.ps1` 仅适用于本机已准备的 MySQL 运行库，源码包不包含运行库。前端可独立启动：
 
-摘要使用 `[实验一-序号]` 至 `[实验五-序号]` 中文前缀。提交是实际开发变更，不回填历史。仅本地提交，由本人最后创建 GitHub 仓库并推送；远程 PR 和云端 CI 未执行不能写成已通过。
+```powershell
+cd frontend
+npm ci
+npm run dev -- --host 127.0.0.1
+```
 
-最终报告将为 `202232110113余家祥.docx`，源码、SQL、配置示例和环境说明整理为 ZIP。报告中的 GitHub 地址待推送后填写。五实验与交付验收尚在进行，最终状态见 `docs/PROGRESS.md`。
+Vite默认端口5173，Java默认8080。前端 Axios 默认调用8080；可通过 `.env.local` 中的 `VITE_API_BASE_URL` 调整，另需同步后端 CORS 允许来源。
 
-AI 辅助生成和检查代码、测试、文档。自动验证不能代替本人理解；提交前应阅读各层职责、复述接口调用流程，并复核报告中的真实结果。
+## 实验五模型接入
 
-## 实验四账号与权限
+按照 `model-service/README.md` 安装固定官方 Python Codex SDK，并先执行 `--check-safety`。默认使用官方 ChatGPT 登录；不读取或复制登录凭据、不自动切换收费 API。仅 HTTP 健康检查成功不能证明模型接通。无法验证权限时接口返回明确错误，不能用固定答案代替。
 
-完成SQL01至04，构建后运行tools/Init-DemoAccounts.ps1生成仅本机的随机账号及签名密钥，密码查看.runtime/demo-accounts.json，不进提交材料。学生只读课程通知；教师可维护。登录token只在页面内存，刷新需重登，30分钟后失效。生产密钥必须至少32个UTF8字节，可通过app.jwt.secret私有properties或APP_JWT_SECRET环境变量配置。
+可选兼容 API 模式需要本人明确选择并提供自己的 API 账户配置，ChatGPT 订阅不能充当 API Key。代码支持该模式，当前未进行实际 API 模式验证。System/User 练习见 `docs/提示词练习.md`，检索和边界用例见 `docs/test-cases.md`。
+
+## 检查和提交材料
+
+```powershell
+./mvnw.cmd -B -ntp verify
+python tools/check_api.py --stage final
+# 仅真实模型可用时运行，不会模拟回答
+python tools/check_api.py --stage final --model
+python tools/Build-Submission.py
+```
+
+接口文档在 `docs/openapi.json`，SQL配置在 `database/`、`config/`；实验步骤对照在 `docs/teacher-steps.md`，真实测试证据在 `reports/2026-10-08/`。
+
+五实验合订报告为 `deliverables/202232110113余家祥.docx`，源码、SQL和环境配置说明整理到上一级 `202232110113余家祥_源代码.zip`。本地 Git 仓库保留完整提交历史，ZIP 不含 `.git`；提交历史文本进入源码包。尚未创建远程仓库、推送、执行远程 PR 或云端 CI，GitHub 链接待本人推送后填写。
+
+AI 辅助生成和检查代码、测试、文档。提交前本人仍需阅读并理解代码，复述“页面 → Controller → Service → Mapper → MySQL”的调用过程，并核对实验结果。
