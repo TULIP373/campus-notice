@@ -119,7 +119,7 @@ def verify_enforcement(client) -> None:
         result = _request(client, "command/exec", {
             "command": [str(ps), "-NoProfile", "-NonInteractive", "-Command", script],
             "cwd": str(EMPTY), "permissionProfile": PROFILE,
-            "timeoutMs": 15000, "outputBytesCap": 256,
+            "timeoutMs": 15000,
         })
         if result.get("exitCode") != 0 or result.get("stdout", "").strip() != "BOUNDARY_OK":
             raise BridgeError("本机未能验证文件读取/写入隔离；模型调用已禁用。")
