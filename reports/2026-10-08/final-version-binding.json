@@ -1,0 +1,19 @@
+{
+  "verified_commit": "f679beba7ae984da4b16ad984968cad735ef9472",
+  "previous_application_evidence_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "resume_execution_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+  "non_artifact_changes": [
+    "deliverables/202232110113余家祥.docx",
+    "tools/Build-Report.py"
+  ],
+  "application_tests_sql_configuration_ui_model_unchanged": true,
+  "report_repair": "Complete source lines preserved in each paragraph; Word soft wrap only",
+  "report_sha256": "ed5c50eef8e9388936596bb09a4ca0723daa18c33e32ce70b127e433872237c0",
+  "report_check": "document-check.json",
+  "source_line_check": "documentQA/code-excerpt-check.json",
+  "real_model_evidence_retained": true,
+  "real_model_reexecuted_this_resume": false,
+  "archive_build_check": "resume-archive-build-check.json",
+  "checked_at": "2026-10-08T13:45:12.727542+08:00",
+  "result": "PASS"
+}

@@ -43,7 +43,7 @@
   "template_preserve_parts_equal": true,
   "observations": "Removed hard paragraph wrapping of code. All 79 code paragraphs match complete source lines. Word soft wrapping is visual only. Reviewed changed pages 4/6/11/15/16/17/18 individually in small batches: no clipping, overlap or missing text; 18 pages and original TOC map unchanged.",
   "render_method": "Word COM read-only PDF export and bundled pypdfium2; canonical bundled LibreOffice unavailable, fallback recorded",
-  "version_binding_basis": "Pending report repair commit; only report generator and DOCX changed, application and tests unchanged.",
+  "version_binding_basis": "Report generator and DOCX repair committed in f679beb; all 7 changed page images reviewed, remaining 11 PNGs identical; source/test/configuration unchanged.",
   "code_excerpt_source_match": true,
   "latest_changed_pages_viewed": [
     4,
@@ -66,5 +66,6 @@
     12,
     13,
     14
-  ]
+  ],
+  "verified_commit": "f679beba7ae984da4b16ad984968cad735ef9472"
 }
