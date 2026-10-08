@@ -361,7 +361,8 @@ class Checks:
                                   '在内存对照全部秘密：短于8字也须逐项精确或结合密码/密钥语境检查，不记录裸值，只登记类型及通过/失败']}
 
     def unavailable_model(self):
-        data = self.request('POST', '/api/ask', {'courseId': self.course_list[0]['id'], 'question': '项目的提交要求是什么？'}, self.tokens['student'], timeout=45)
+        # 与 MODEL-01 已证明能检索并调用模型的问题保持相同，不能用无资料拒答代替故障路径。
+        data = self.request('POST', '/api/ask', {'courseId': self.course_list[0]['id'], 'question': '这个课程项目的提交要求、报告格式和截止时间是什么？'}, self.tokens['student'], timeout=45)
         self.expect(data[0] in [502, 503, 504], '关闭模型服务后应为 502/503/504，不能返回伪造成功答案')
         self.expect(isinstance(data[1], dict) and isinstance(data[1].get('message'), str), '模型错误应为明确 JSON message')
         return {'http': data[0], 'message': data[1]['message']}
