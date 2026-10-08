@@ -15,8 +15,10 @@ function deadlineText(value) { return value ? value.replace('T', ' ').slice(0, 1
       :class="{ selected: notice.id === selectedId }" @click="$emit('select', notice)">
       <span class="badge">{{ notice.type === 'MATERIAL' ? '学习资料' : '课程通知' }}</span>
       <strong>{{ notice.title }}</strong>
+      <span class="card-summary">{{ notice.summary }}</span>
       <span class="muted small">截止时间：{{ deadlineText(notice.deadline) }}</span>
       <span class="muted small">来源：{{ notice.source }}</span>
+      <span class="card-footer">{{ notice.attachments?.length ? notice.attachments.length + ' 个参考附件 · ' : '' }}查看原文与详情 →</span>
     </button>
   </section>
 </template>

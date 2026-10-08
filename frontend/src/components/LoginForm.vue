@@ -30,11 +30,11 @@ async function login() {
 <template>
   <form class="login-panel" @submit.prevent="login">
     <h2>登录课程通知平台</h2>
-    <p class="muted">学生查看课程内容，教师维护通知与资料。</p>
+    <p class="muted">学生查看课程内容，任课教师发布和维护自己的课程通知。</p>
     <label for="login-username">用户名</label><input id="login-username" v-model="username" autocomplete="username" required maxlength="50" :disabled="pending" />
     <label for="login-password">密码</label><input id="login-password" v-model="password" type="password" autocomplete="current-password" required maxlength="72" :disabled="pending" />
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <button type="submit" :disabled="pending">{{ pending ? '正在登录…' : '登录' }}</button>
-    <p class="muted small">令牌仅保存在页面内存中，刷新后需重新登录。演示账号请查看本机初始化结果。</p>
+    <p class="muted small">演示账号见项目根目录“演示账号.txt”。刷新页面后需重新登录。</p>
   </form>
 </template>

@@ -21,7 +21,7 @@ start.cmd
 
 网页地址：`http://127.0.0.1:5173/`。后端检查地址：`http://127.0.0.1:8080/api/health`。
 
-学生和教师账号在本机 `.runtime/demo-accounts.json`。刷新网页后需要重新登录。演示问答前在 PowerShell 运行 `.\tools\ps1\Start-Demo.ps1 -Mode Model`；模型服务启动后，首次提问可能需要等待。
+学生和八名任课教师的账号密码在根目录“演示账号.txt”，任课教师只显示和维护自己的课程。刷新网页后需要重新登录。演示问答前在 PowerShell 运行 `.\tools\ps1\Start-Demo.ps1 -Mode Model`；模型服务启动后，首次提问可能需要等待。
 
 如果只是想通过命令运行、不打开浏览器和暂停窗口，在命令后加 `-NoPause`，例如 `start.cmd -NoPause`。
 
@@ -40,7 +40,7 @@ start.cmd
 ## 换一台电脑运行
 
 1. 安装 JDK 17、MySQL 8 和 Node.js。模型服务另外需要 Python 3.11 以上版本。
-2. 创建 `campus_notice` 数据库，按顺序执行 `database/01-users.sql` 至 `04-security.sql`。
+2. 创建 `campus_notice` 数据库，按顺序执行 `database/01-users.sql` 至 `04-security.sql`；已有旧版演示数据时再执行 `05-demo-update.sql`。
 3. 创建 `.runtime` 文件夹，将 `config/database.example.properties` 和 `security.example.properties` 复制为 `.runtime/database.properties` 和 `security.properties`，填写自己的数据库连接和至少32字节的 JWT 密钥。
 4. 在 PowerShell 中构建并初始化演示账户：
 
@@ -53,10 +53,16 @@ start.cmd
 
 换电脑时使用自己安装的 MySQL 服务。`start.cmd` 中的数据库便捷启动仅适用于当前电脑已经准备好的本地运行库；源码包不含数据库软件和数据文件。模型服务安装方法见 `model-service/README.md`。
 
+## 在 IDEA 中演示
+
+本机已配置 JDK 17，运行配置选择“课程通知平台-后端”；也可选择“课程通知平台-Maven运行”。工作目录为项目根目录，数据库和登录配置从 `.runtime` 读取。
+
+先双击 `start.cmd` 启动网页，再在 PowerShell 运行 `.\tools\ps1\Stop-Backend.ps1`，把后端交给 IDEA 运行。前端继续访问同一个8080端口。不要同时运行 CMD 启动的后端和 IDEA 后端。讲解代码时可从 `CampusNoticeApplication`、`NoticeController`、`CourseService` 和 `RagService` 展开。
+
 ## 检查和交付
 
 后端测试：`.\mvnw.cmd -B -ntp verify`。
 前端构建：进入 `frontend` 后运行 `npm ci` 和 `npm run build`。
-后端40项测试及前端构建已通过，启动脚本已检查重复启动、端口冲突、冷启动和自动构建。
+后端测试与前端构建用于检查业务规则和页面构建；启动脚本支持重复启动检查、端口冲突提示和自动构建。
 
 报告在 `deliverables/202232110113余家祥.docx`。源码包还包含 SQL、配置示例和运行说明。GitHub 地址在本人推送仓库后补充；目前未进行远程 PR 或云端 CI。

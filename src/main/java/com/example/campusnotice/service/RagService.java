@@ -37,7 +37,19 @@ public class RagService {
                     || notice.getCourseId() != courseId) { continue; }
             List<String> texts = split(document(notice));
             for (int index = 0; index < texts.size(); index++) {
-                chunks.add(new Chunk(notice, index, texts.get(index), frequencies(texts.get(index))));
+                chunks.add(new Chunk(notice, index, texts.get(index), frequencies(texts.get(index)), notice.getTitle(), notice.getSource()));
+            }
+            int index = texts.size();
+            for (var attachment : notice.getAttachments()) {
+                if (attachment.content() == null || attachment.content().isBlank()) { continue; }
+                // 保留附件的章节边界，避免评分或格式要求埋在长通知中而无法命中。
+                for (String section : attachment.content().split("(?=[一二三四五六七八九十]+、)")) {
+                    for (String part : split(section)) {
+                        String text = "附件：" + attachment.filename() + "\n" + part;
+                        chunks.add(new Chunk(notice, index++, text, frequencies(text),
+                                notice.getTitle() + " · " + attachment.filename(), notice.getSource()));
+                    }
+                }
             }
         }
         if (chunks.isEmpty()) { return List.of(); }
@@ -52,12 +64,30 @@ public class RagService {
             double score = cosine(queryVector, vector(chunk.frequencies(), documentFrequency, chunks.size()));
             if (score >= MIN_SCORE) {
                 Notice notice = chunk.notice();
-                results.add(new RagSource(courseId, notice.getId(), notice.getTitle(), notice.getSource(),
+                results.add(new RagSource(courseId, notice.getId(), chunk.title(), chunk.source(),
                         chunk.text(), score, chunk.index()));
             }
         }
         return results.stream().sorted(Comparator.comparingDouble(RagSource::score).reversed()
                 .thenComparingLong(RagSource::noticeId).thenComparingInt(RagSource::chunkIndex)).limit(3).toList();
+    }
+
+    public List<RagSource> overview(Notice notice, long courseId) {
+        if (notice == null || notice.getId() == null || notice.getCourseId() == null || notice.getCourseId() != courseId) { return List.of(); }
+        List<RagSource> result = new ArrayList<>();
+        List<String> body = split(document(notice));
+        for (int index = 0; index < Math.min(2, body.size()); index++) {
+            result.add(new RagSource(courseId, notice.getId(), notice.getTitle(), notice.getSource(), body.get(index), 0, index));
+        }
+        if (!notice.getAttachments().isEmpty()) {
+            var attachment = notice.getAttachments().get(0);
+            List<String> texts = split(attachment.content());
+            if (!texts.isEmpty()) {
+                result.add(new RagSource(courseId, notice.getId(), notice.getTitle() + " · " + attachment.filename(),
+                        notice.getSource(), "附件：" + attachment.filename() + "\n" + texts.get(0), 0, body.size()));
+            }
+        }
+        return List.copyOf(result);
     }
 
     private String document(Notice notice) {
@@ -111,6 +141,6 @@ public class RagService {
         return Math.min(1.0, dot / Math.sqrt(leftSquare * rightSquare));
     }
 
-    private record Chunk(Notice notice, int index, String text, Map<String, Integer> frequencies) {
+    private record Chunk(Notice notice, int index, String text, Map<String, Integer> frequencies, String title, String source) {
     }
 }

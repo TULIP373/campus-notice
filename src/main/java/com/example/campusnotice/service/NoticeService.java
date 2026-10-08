@@ -19,12 +19,20 @@ public class NoticeService {
     public List<Notice> list(Long courseId, String q) {
         if (courseId != null) { courseService.get(courseId); }
         if (q != null && q.length() > 200) { throw new ApiException(HttpStatus.BAD_REQUEST, "搜索关键词最多200字"); }
-        return mapper.findAll(courseId, q == null ? null : q.trim());
+        List<Notice> notices = mapper.findAll(courseId, q == null ? null : q.trim());
+        if (courseId == null) {
+            var allowed = courseService.list().stream().map(course -> course.getId()).toList();
+            notices = notices.stream().filter(notice -> allowed.contains(notice.getCourseId())).toList();
+        }
+        notices.forEach(notice -> notice.setAttachments(mapper.findAttachments(notice.getId())));
+        return notices;
     }
     public Notice get(Long id) {
         requireId(id);
         Notice notice = mapper.findById(id);
         if (notice == null) { throw new ApiException(HttpStatus.NOT_FOUND, "通知不存在"); }
+        courseService.get(notice.getCourseId());
+        notice.setAttachments(mapper.findAttachments(id));
         return notice;
     }
     public Notice create(NoticeRequest request) {
@@ -35,14 +43,16 @@ public class NoticeService {
         return get(notice.getId());
     }
     public Notice update(Long id, NoticeRequest request) {
-        validate(request);
         Notice notice = get(id);
+        validate(request);
         apply(notice, request);
         if (mapper.update(notice) == 0) { throw new ApiException(HttpStatus.NOT_FOUND, "通知不存在"); }
         return get(id);
     }
     public void delete(Long id) {
         requireId(id);
+        Notice notice = mapper.findById(id);
+        if (notice != null) { courseService.get(notice.getCourseId()); }
         if (mapper.deleteById(id) == 0) { throw new ApiException(HttpStatus.NOT_FOUND, "通知不存在"); }
     }
     private void validate(NoticeRequest request) {

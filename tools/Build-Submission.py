@@ -75,7 +75,8 @@ def main():
         contents = archive.namelist()
         for required in ['pom.xml', 'frontend/package-lock.json', 'database/01-users.sql', 'database/04-security.sql',
                          '环境说明.md', 'config/database.example.properties', 'tools/ps1/Init-DemoAccounts.ps1',
-                         'start.cmd', 'stop.cmd', 'tools/ps1/Start-Demo.ps1',
+                         'start.cmd', 'stop.cmd', 'tools/ps1/Start-Demo.ps1', 'tools/ps1/Service-Process.ps1',
+                         'database/05-demo-update.sql', 'src/main/resources/attachments/course-1-reference.pdf',
                          'src/test/java/com/example/campusnotice/service/RagServiceTest.java',
                          'deliverables/202232110113余家祥.docx']:
             if 'campus-notice/' + required not in contents:

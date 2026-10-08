@@ -5,6 +5,14 @@ import com.example.campusnotice.entity.Notice;
 import com.example.campusnotice.service.NoticeService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
+import com.example.campusnotice.exception.ApiException;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +39,22 @@ public class NoticeController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('notice:read')")
     public Notice get(@PathVariable Long id) { return service.get(id); }
+    @GetMapping("/{id}/attachments/{attachmentId}")
+    @PreAuthorize("hasAuthority('notice:read')")
+    public ResponseEntity<Resource> attachment(@PathVariable Long id, @PathVariable Long attachmentId) {
+        var attachment = service.get(id).getAttachments().stream()
+                .filter(item -> item.id().equals(attachmentId)).findFirst()
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "当前通知中没有此附件"));
+        if (attachment.resourceName() == null || !attachment.resourceName().matches("[a-z0-9-]+\\.pdf")) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "附件不存在");
+        }
+        Resource resource = new ClassPathResource("attachments/" + attachment.resourceName());
+        if (!resource.exists()) { throw new ApiException(HttpStatus.NOT_FOUND, "附件文件不存在"); }
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+                        .filename(attachment.filename(), StandardCharsets.UTF_8).build().toString())
+                .body(resource);
+    }
     @PostMapping
     @PreAuthorize("hasRole('TEACHER') and hasAuthority('notice:write')")
     @ResponseStatus(HttpStatus.CREATED)

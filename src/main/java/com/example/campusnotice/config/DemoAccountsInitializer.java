@@ -2,6 +2,7 @@ package com.example.campusnotice.config;
 
 import com.example.campusnotice.dto.UserRequest;
 import com.example.campusnotice.mapper.UserMapper;
+import com.example.campusnotice.mapper.CourseMapper;
 import com.example.campusnotice.service.UserService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,24 +24,41 @@ public class DemoAccountsInitializer implements ApplicationRunner {
     private final ObjectMapper json;
     private final ConfigurableApplicationContext context;
     private final String accountsFile;
+    private final CourseMapper courses;
 
     public DemoAccountsInitializer(UserMapper mapper, UserService users, ObjectMapper json,
             ConfigurableApplicationContext context,
-            @Value("${app.demo.accounts-file:.runtime/demo-accounts.json}") String accountsFile) {
+            @Value("${app.demo.accounts-file:.runtime/demo-accounts.json}") String accountsFile, CourseMapper courses) {
         this.mapper = mapper; this.users = users; this.json = json;
         this.context = context; this.accountsFile = accountsFile;
+        this.courses = courses;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         JsonNode accounts = json.readTree(Path.of(accountsFile).toFile());
-        for (String key : new String[]{"teacher", "student"}) {
-            JsonNode account = accounts.path(key);
+        var entries = accounts.fields();
+        while (entries.hasNext()) {
+            var entry = entries.next();
+            String key = entry.getKey();
+            JsonNode account = entry.getValue();
             String username = account.path("username").asText();
             String password = account.path("password").asText();
-            String role = key.equals("teacher") ? "TEACHER" : "STUDENT";
+            String role = key.startsWith("teacher") ? "TEACHER" : "STUDENT";
+            String name = account.path("name").asText(role.equals("TEACHER") ? "演示教师" : "演示学生");
             if (mapper.findByUsername(username) == null) {
-                users.create(new UserRequest(username, key.equals("teacher") ? "演示教师" : "演示学生", password, role));
+                users.create(new UserRequest(username, name, password, role));
+            }
+            var user = mapper.findByUsername(username);
+            if (!role.equals(user.getRole())) { throw new IllegalStateException("演示账号角色不匹配"); }
+            user.setName(name);
+            mapper.update(user);
+            if (role.equals("TEACHER")) {
+                for (JsonNode courseName : account.path("courses")) {
+                    var course = courses.findByName(courseName.asText());
+                    if (course == null) { throw new IllegalStateException("请先导入演示课程"); }
+                    courses.assignTeacher(course.getId(), user.getId());
+                }
             }
         }
         // 不覆盖已有密码。初始化服务使用随机端口，完成后立即退出。

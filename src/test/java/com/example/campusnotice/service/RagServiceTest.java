@@ -2,6 +2,7 @@ package com.example.campusnotice.service;
 
 import com.example.campusnotice.dto.RagSource;
 import com.example.campusnotice.entity.Notice;
+import com.example.campusnotice.entity.NoticeAttachment;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -94,6 +95,28 @@ class RagServiceTest {
             assertTrue(source.text().contains(query), "引用应保留命中的原始事实：" + query);
             assertTrue(source.chunkIndex() >= 0);
         }
+    }
+
+    @Test
+    void originalAttachmentTextIsRetrievableWithItsFilename() {
+        Notice notice = notice(51L, 1L, "详见参考附件");
+        notice.setAttachments(List.of(new NoticeAttachment(1L, "评分要求.pdf", "course-1-reference.pdf", "评分比例：关系模型40%，SQL正确性40%，运行说明20%。")));
+        var results = service.retrieve(List.of(notice), 1L, "评分比例 SQL正确性");
+        assertFalse(results.isEmpty());
+        assertTrue(results.get(0).text().contains("评分要求.pdf"));
+        assertTrue(results.get(0).text().contains("SQL正确性40%"));
+    }
+
+    @Test
+    void shortScoringQuestionFindsTheAttachmentChapterBeyondALongBody() {
+        Notice notice = notice(61L, 1L, "正文说明".repeat(200));
+        notice.setTitle("图书借阅数据库设计作业");
+        notice.setAttachments(List.of(new NoticeAttachment(2L, "图书借阅数据库设计作业参考说明.pdf", "course-2-reference.pdf",
+                "一、表结构要求\n图书表、读者表和借阅表必须设置主键和外键。\n二、查询清单\n完成图书检索、未还记录和借阅统计。\n三、评分比例\n关系模型与约束占40%，SQL正确性占40%，运行结果和说明占20%。\n四、提交\n提交设计说明和SQL文件。")));
+        var results = service.retrieve(List.of(notice), 1L, "参考附件中的评分比例分别是多少？");
+        assertFalse(results.isEmpty());
+        assertTrue(results.stream().anyMatch(item -> item.text().contains("SQL正确性占40%")));
+        assertTrue(service.overview(notice, 2L).isEmpty(), "概览也必须隔离课程");
     }
 
     private Notice notice(Long id, Long courseId, String content) {

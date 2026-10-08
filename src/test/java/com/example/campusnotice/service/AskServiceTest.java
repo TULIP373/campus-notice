@@ -132,6 +132,41 @@ class AskServiceTest {
         verifyNoInteractions(model);
     }
 
+    @Test
+    void selectedNoticeMustBelongToCurrentCourse() {
+        Notice alien = new Notice();
+        alien.setCourseId(2L);
+        when(notices.get(20L)).thenReturn(alien);
+        ApiException failure = assertThrows(ApiException.class, () -> service.ask(new AskRequest(1L, "提交什么？", 20L)));
+        assertEquals(HttpStatus.BAD_REQUEST, failure.getStatus());
+        verifyNoInteractions(model, rag);
+    }
+
+    @Test
+    void selectedNoticeDoesNotRetrieveOtherNotices() {
+        Notice selected = new Notice();
+        selected.setId(10L);
+        selected.setCourseId(1L);
+        when(notices.get(10L)).thenReturn(selected);
+        when(rag.retrieve(List.of(selected), 1L, "提交什么？")).thenReturn(List.of(source()));
+        when(model.ask(anyString(), anyString())).thenReturn("提交源码[1]。");
+        assertEquals("提交源码[1]。", service.ask(new AskRequest(1L, "提交什么？", 10L)).answer());
+        verify(notices, never()).list(any(), any());
+    }
+
+    @Test
+    void selectedNoticeOverviewAnswersGenericReadingQuestionsWithoutOtherNotices() {
+        Notice selected = new Notice();
+        selected.setId(10L);
+        selected.setCourseId(1L);
+        when(notices.get(10L)).thenReturn(selected);
+        when(rag.retrieve(List.of(selected), 1L, "这条通知需要我做什么？")).thenReturn(List.of());
+        when(rag.overview(selected, 1L)).thenReturn(List.of(source()));
+        when(model.ask(anyString(), anyString())).thenReturn("提交源码[1]。");
+        assertEquals("提交源码[1]。", service.ask(new AskRequest(1L, "这条通知需要我做什么？", 10L)).answer());
+        verify(notices, never()).list(any(), any());
+    }
+
     private void refusal(AskResponse response) {
         assertEquals(1L, response.courseId());
         assertNotNull(response.answer());

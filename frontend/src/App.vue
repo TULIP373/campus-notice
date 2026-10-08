@@ -210,10 +210,10 @@ onUnauthorized(() => logout('登录状态已失效，请重新登录。'))
 <template>
   <div class="app-shell">
     <header class="page-header">
-      <div><p class="eyebrow">个人项目 · 课程信息集中整理</p><h1>课程通知平台</h1></div>
+      <div><p class="eyebrow">通知、资料与课程问答</p><h1>课程通知平台</h1></div>
       <div v-if="user" class="account-bar"><span class="student-label">{{ user.name }} · {{ teacherMode ? '教师' : '学生' }}</span><button class="secondary" @click="logout()">退出登录</button></div>
     </header>
-    <p class="demo-banner">本机演示课程：软件项目实训的截止时间待老师通知；其他课程日期为演示示例，请以老师实际发布的信息为准。</p>
+    <p class="demo-banner">演示数据：课程通知及附件用于模拟课堂使用；软件项目实训的实际截止时间待老师通知。</p>
     <p v-if="authMessage" class="error" role="alert">{{ authMessage }}</p>
     <LoginForm v-if="!user" @authenticated="authenticated" />
     <p v-else-if="coursesLoading" role="status" class="state-panel">正在加载课程…</p>
@@ -221,11 +221,11 @@ onUnauthorized(() => logout('登录状态已失效，请重新登录。'))
       <p>{{ coursesError }}</p><button @click="loadCourses">重新加载课程</button>
     </div>
     <main v-else class="workspace">
-      <CourseList :courses="courses" :selected-id="selectedCourse?.id" @select="selectCourse" />
+      <CourseList :courses="courses" :selected-id="selectedCourse?.id" :teacher-mode="teacherMode" @select="selectCourse" />
       <section class="course-content">
         <header class="course-heading"><h2>{{ selectedCourse?.name || '暂无课程' }}</h2><p class="muted">{{ selectedCourse?.description }}</p></header>
         <template v-if="selectedCourse">
-          <div v-if="teacherMode" class="maintenance-bar"><p class="muted small">教师账号可维护内容；权限由后端检查。</p><button :disabled="savePending" @click="openEditor()">新增通知或资料</button></div>
+          <div v-if="teacherMode" class="maintenance-bar"><p class="muted small">任教课程：{{ selectedCourse.name }} · 发布和维护本课程的通知、资料</p><button :disabled="savePending" @click="openEditor()">发布通知或资料</button></div>
           <p v-if="feedback" class="success" role="status">{{ feedback }}</p>
           <NoticeForm v-if="editorOpen && teacherMode" :key="editorVersion" :initial="editorInitial" :pending="savePending" :error="saveError" @save="saveNotice" @cancel="cancelEditor" />
           <div class="content-tools">
@@ -251,7 +251,7 @@ onUnauthorized(() => logout('登录状态已失效，请重新登录。'))
               </div>
             </div>
           </div>
-          <AskPanel :key="`${user.id}:${selectedCourse.id}:${sessionEpoch}`" :course="selectedCourse" :session-key="sessionEpoch" />
+          <AskPanel v-if="!detailLoading" :key="`${user.id}:${selectedCourse.id}:${detail?.id || 'course'}:${sessionEpoch}`" :course="selectedCourse" :notice="detail" :session-key="sessionEpoch" />
         </template>
       </section>
     </main>

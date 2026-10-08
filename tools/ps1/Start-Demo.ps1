@@ -6,15 +6,14 @@
 )
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+. "$PSScriptRoot\Service-Process.ps1"
 
 function Test-RunningService([int]$Port, [string]$ProcessName, [string]$Url) {
     $listeners = @(Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue)
     if ($listeners.Count -eq 0) { return $false }
     foreach ($listener in $listeners) {
         $process = Get-CimInstance Win32_Process -Filter ('ProcessId=' + $listener.OwningProcess)
-        if (-not $process -or $process.Name -ne $ProcessName -or
-            -not $process.CommandLine -or
-            $process.CommandLine.IndexOf($projectRoot, [StringComparison]::OrdinalIgnoreCase) -lt 0) {
+        if (-not (Test-ProjectProcess $process $projectRoot $ProcessName)) {
             throw "Port $Port is used by another program. Close that program or change its port."
         }
     }

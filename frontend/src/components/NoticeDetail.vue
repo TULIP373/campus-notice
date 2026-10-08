@@ -1,5 +1,35 @@
 <script setup>
-defineProps({ notice: Object, loading: Boolean, error: String })
+import { ref, watch, onBeforeUnmount } from 'vue'
+import { api } from '../api'
+const props = defineProps({ notice: Object, loading: Boolean, error: String })
+const filePending = ref(null)
+const fileError = ref('')
+let fileEpoch = 0
+watch(() => props.notice?.id, () => { fileEpoch++; filePending.value = null; fileError.value = '' })
+onBeforeUnmount(() => { fileEpoch++ })
+async function download(attachment) {
+  if (filePending.value) return
+  const id = props.notice.id
+  const epoch = fileEpoch
+  filePending.value = attachment.id
+  fileError.value = ''
+  try {
+    const response = await api.get(`/api/notices/${id}/attachments/${attachment.id}`, { responseType: 'blob' })
+    if (epoch !== fileEpoch) return
+    const url = URL.createObjectURL(response.data)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = attachment.filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  } catch {
+    if (epoch === fileEpoch) fileError.value = '附件下载失败，请重试。'
+  } finally {
+    if (epoch === fileEpoch) filePending.value = null
+  }
+}
 defineEmits(['retry'])
 function deadlineText(value) { return value ? value.replace('T', ' ').slice(0, 16) : '待老师通知' }
 </script>
@@ -17,10 +47,19 @@ function deadlineText(value) { return value ? value.replace('T', ' ').slice(0, 1
         <div><dt>截止时间</dt><dd>{{ deadlineText(notice.deadline) }}</dd></div>
         <div><dt>信息来源</dt><dd>{{ notice.source }}</dd></div>
       </dl>
-      <section><h3>正文</h3><p class="paragraph">{{ notice.content }}</p></section>
-      <section><h3>提交要求</h3><p class="paragraph">{{ notice.submissionRequirements || '本条内容未填写提交要求。' }}</p></section>
-      <section><h3>报告格式</h3><p class="paragraph">{{ notice.reportFormat || '本条内容未填写报告格式。' }}</p></section>
+      <section><h3>通知原文</h3><p class="paragraph original-content">{{ notice.content }}</p></section>
+      <section v-if="notice.submissionRequirements"><h3>要点整理</h3><p class="paragraph">{{ notice.submissionRequirements }}</p></section>
+      <section v-if="notice.reportFormat"><h3>文件与格式要求</h3><p class="paragraph">{{ notice.reportFormat }}</p></section>
+      <section class="attachments">
+        <h3>参考附件</h3>
+        <p v-if="!notice.attachments?.length" class="muted small">这条通知没有附带文件。</p>
+        <div v-for="attachment in notice.attachments" :key="attachment.id" class="attachment-item">
+          <div class="attachment-heading"><div><strong>{{ attachment.filename }}</strong><p class="muted small">PDF · 老师通知随附的参考文件（模拟）</p></div><button class="secondary" :disabled="!!filePending" @click="download(attachment)">{{ filePending === attachment.id ? '正在下载…' : '下载原文件' }}</button></div>
+          <details><summary>查看附件原文</summary><p class="paragraph">{{ attachment.content }}</p></details>
+        </div>
+        <p v-if="fileError" class="error" role="alert">{{ fileError }}</p>
+      </section>
     </template>
-    <div v-else class="empty detail-empty"><h2>选择一条内容查看详情</h2><p>提交要求、报告格式、截止时间和出处集中展示在这里。</p></div>
+    <div v-else class="empty detail-empty"><h2>选择一张卡片查看原文</h2><p>查看老师发布的完整通知、参考附件，也可以针对这条内容向 AI 提问。</p></div>
   </article>
 </template>

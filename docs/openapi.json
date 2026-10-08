@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "课程通知平台接口",
-    "version": "0.5.0",
-    "description": "JWT登录，课程通知CRUD及当前课程原文问答。健康检查和登录公开，其余需Bearer令牌。通知写操作仅教师。问答需ask:use；模型不可用不返回伪造回答。"
+    "version": "0.6.0",
+    "description": "课程通知、原文附件和资料问答。学生查看全部课程，教师只查看和维护任教课程。登录和健康检查公开，其余接口使用 Bearer 令牌。"
   },
   "servers": [
     {
@@ -807,7 +807,8 @@
               }
             }
           }
-        }
+        },
+        "description": "学生返回全部课程；教师只返回自己任教的课程。"
       }
     },
     "/api/courses/{id}": {
@@ -930,7 +931,7 @@
     "/api/ask": {
       "post": {
         "summary": "当前课程检索问答",
-        "description": "先仅检索当前课程资料，最多3个原文片段。无资料、跨课程和明显注入明确拒答；SDK错误返回非成功状态。仅本地演示，引用编号检查不等于事实真实性保证。",
+        "description": "按课程检索原文与参考附件，最多引用三个片段。noticeId可将范围限定到一条通知。教师仅能询问任教课程；无依据明确拒答。",
         "requestBody": {
           "required": true,
           "content": {
@@ -1021,6 +1022,56 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/notices/{id}/attachments/{attachmentId}": {
+      "get": {
+        "summary": "下载当前通知的原始PDF附件",
+        "description": "需要notice:read权限；教师还须任教此课程。附件必须属于当前通知。",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "attachmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PDF文件，Content-Disposition为UTF-8附件名",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "未登录"
+          },
+          "403": {
+            "description": "不是本课程任课教师或没有读取权限"
+          },
+          "404": {
+            "description": "通知或该通知的附件不存在"
           }
         }
       }
@@ -1158,6 +1209,16 @@
             "type": "string",
             "example": "2026-11-18T18:00:00",
             "description": "服务器本地日期时间"
+          },
+          "summary": {
+            "type": "string",
+            "description": "卡片上的要点摘要，优先使用提交要求，最长140字加省略号。"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoticeAttachment"
+            }
           }
         }
       },
@@ -1297,6 +1358,13 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1000
+          },
+          "noticeId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "nullable": true,
+            "description": "可选。提供时仅根据当前通知及其附件回答，通知必须属于所选课程。"
           }
         }
       },
@@ -1350,6 +1418,22 @@
             "items": {
               "$ref": "#/components/schemas/RagSource"
             }
+          }
+        }
+      },
+      "NoticeAttachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string",
+            "description": "参考附件完整原文，参加问答检索。"
           }
         }
       }

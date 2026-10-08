@@ -87,3 +87,17 @@ select:focus-visible, textarea:focus-visible { outline: 3px solid #68aadf; outli
 .source-detail summary { cursor: pointer; font-size: 14px; color: #1764a1; }
 .source-detail summary:focus-visible { outline: 3px solid #68aadf; outline-offset: 2px; }
 .source-detail p { margin: 12px 0 0; }
+.card-summary { font-size: 14px; line-height: 1.7; color: #415d73; }
+.card-footer { color: #1764a1; font-size: 12px; padding-top: 6px; border-top: 1px solid #e4ebf1; }
+.original-content { line-height: 1.9; }
+.detail-panel section { margin-top: 22px; }
+.attachment-item { padding: 14px; margin-top: 10px; background: #fff; border: 1px solid #dbe5ed; border-radius: 8px; }
+.attachment-heading { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.attachment-heading strong { font-size: 14px; }
+.attachment-heading p { margin: 4px 0 10px; }
+.attachment-heading button { flex-shrink: 0; font-size: 12px; padding: 6px 10px; }
+.attachment-item summary { cursor: pointer; color: #1764a1; font-size: 13px; }
+.attachment-item details .paragraph { margin: 12px 0 0; }
+.question-shortcuts { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0; }
+.question-shortcuts button { padding: 6px 10px; font-size: 12px; }
+@media (max-width: 680px) { .attachment-heading { flex-direction: column; } }
