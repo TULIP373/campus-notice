@@ -2,14 +2,20 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
 import sys
+import tempfile
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
-EMPTY = ROOT / ".runtime" / "model-empty"
+# Windows deny ACLs on ROOT are inherited: keep the read-only cwd outside it.
+EMPTY = Path(tempfile.gettempdir()) / (
+    "campus-notice-question-only-" + hashlib.sha256(str(ROOT).encode("utf-8")).hexdigest()[:12]
+)
+APPDATA = ROOT / ".runtime" / "model-appdata"
 CANARY = ROOT / ".runtime" / "model-read-canary.txt"
 PROFILE = "campus-question-only"
 GUARD = (
@@ -30,13 +36,16 @@ def clean_environment(source: dict[str, str]) -> dict[str, str]:
         name: value for name, value in source.items()
         if not sensitive.search(name)
         and name.upper() not in {"PYTHONPATH", "PYTHONHOME", "OPENAI_BASE_URL", "CODEX_ACCESS_TOKEN"}
+        and (not name.upper().startswith("CODEX_") or name.upper() == "CODEX_HOME")
+        and not name.upper().startswith("NODE_REPL_")
     }
 
 
 def prepare_runtime() -> None:
     EMPTY.mkdir(parents=True, exist_ok=True)
     if any(EMPTY.iterdir()):
-        raise BridgeError("模型工作目录必须为空，请检查 .runtime/model-empty。")
+        raise BridgeError("模型专用临时工作目录必须为空；模型调用已禁用。")
+    APPDATA.mkdir(parents=True, exist_ok=True)
     # This is public, deliberately non-secret test data, never a real source file.
     CANARY.write_text("public-sandbox-read-canary", encoding="utf-8")
 
@@ -50,19 +59,28 @@ def toml_value(value) -> str:
 def config_overrides() -> tuple[str, ...]:
     codex_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")).resolve()
     filesystem = {
-        ":root": "deny", ":minimal": "read", ":workspace_roots": {".": "read"},
+        # Native elevated Windows requires root read; carve out project and credentials.
+        # This is a limited local demonstration, not whole-machine filesystem isolation.
+        ":root": "read", ":minimal": "read", ":workspace_roots": {".": "read"},
         str(ROOT): "deny", str(ROOT / ".runtime"): "deny", str(EMPTY): "read",
         str(codex_home): "deny", str(codex_home / "auth.json"): "deny",
         str(Path.home() / ".ssh"): "deny",
     }
     settings = {
         "forced_login_method": "chatgpt", "model_provider": "openai",
+        "windows.sandbox": "elevated",
         "approval_policy": "never", "default_permissions": PROFILE,
         f"permissions.{PROFILE}.filesystem": filesystem,
         f"permissions.{PROFILE}.network.enabled": False,
         "projects": {str(ROOT): {"trust_level": "untrusted"}},
         "web_search": "disabled", "tools.view_image": False, "project_doc_max_bytes": 0,
         "shell_environment_policy.inherit": "none", "agents.enabled": False,
+        # Required by native PowerShell/Windows crypto startup. Never inherit
+        # application, database, credential, or arbitrary worker environment.
+        "shell_environment_policy.set": {
+            name: value for name, value in os.environ.items()
+            if name.upper() in {"SYSTEMROOT", "WINDIR", "PROGRAMDATA", "TEMP", "TMP"}
+        },
     }
     for feature in (
         "shell_tool", "unified_exec", "shell_snapshot", "apps", "plugins", "hooks",
@@ -82,7 +100,8 @@ def config_overrides() -> tuple[str, ...]:
                 continue
             data = tomllib.loads(path.read_text(encoding="utf-8"))
             for server in data.get("mcp_servers", {}):
-                mcp_servers[server] = {"enabled": False}
+                # Remove disabled binary ACL targets in this child-only config.
+                mcp_servers[server] = {"enabled": False, "command": "cmd.exe", "args": []}
             for plugin in data.get("plugins", {}):
                 plugins[plugin] = {"enabled": False}
     except (OSError, ValueError, TypeError):
@@ -135,6 +154,10 @@ def connect(system: str):
 
     # Clear before SDK construction: its env={} alone would still inherit secrets.
     sanitized = clean_environment(dict(os.environ))
+    # Only this isolated worker's app data changes. USERPROFILE and CODEX_HOME
+    # retain official login. No CUA runtime is needed by this question-only client;
+    # do not refresh ACLs on the desktop app's locked, unrelated runtime files.
+    sanitized["LOCALAPPDATA"] = str(APPDATA)
     os.environ.clear()
     os.environ.update(sanitized)
     overrides = config_overrides()
@@ -190,7 +213,8 @@ def ask(question: str, system: str = "请仅根据提供的公开演示资料回
         result = thread.run(question)
         types = [item.model_dump(mode="json", by_alias=True).get("type", "unknown") for item in result.items]
         print(json.dumps({"event_types": types}), file=sys.stderr, flush=True)
-        if any(kind not in {"reasoning", "agentMessage"} for kind in types):
+        # App-server results include the normal input-message echo as an item.
+        if any(kind not in {"userMessage", "reasoning", "agentMessage"} for kind in types):
             raise BridgeError("检测到问答之外的工具事件，已拒绝交付模型回答。")
         status = getattr(result.status, "value", result.status)
         if status != "completed" or result.error or not result.final_response:
