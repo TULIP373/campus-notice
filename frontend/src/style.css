@@ -71,3 +71,9 @@ select:focus-visible, textarea:focus-visible { outline: 3px solid #68aadf; outli
 .danger { background: #ac3d30; }
 .success { color: #247245; font-size: 14px; }
 @media (max-width: 680px) { .maintenance-bar { align-items: start; flex-direction: column; } .notice-form { padding: 16px; } }
+.account-bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.login-panel { max-width: 460px; margin: 40px auto; background: #fff; padding: 30px; border: 1px solid #dbe5ed; border-radius: 10px; }
+.login-panel label { display: block; margin: 16px 0 6px; }
+.login-panel input { display: block; width: 100%; }
+.login-panel button { margin: 20px 0 14px; }
+@media (max-width: 680px) { .account-bar { justify-content: end; } .login-panel { margin: 24px 0; padding: 22px; } }

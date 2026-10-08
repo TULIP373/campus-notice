@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { api } from './api'
+import { computed, ref } from 'vue'
+import { api, onUnauthorized, setAuthToken } from './api'
 import CourseList from './components/CourseList.vue'
 import NoticeList from './components/NoticeList.vue'
 import NoticeDetail from './components/NoticeDetail.vue'
 import NoticeForm from './components/NoticeForm.vue'
+import LoginForm from './components/LoginForm.vue'
 
 const courses = ref([])
 const selectedCourse = ref(null)
@@ -19,7 +20,11 @@ const selectedNoticeId = ref(null)
 const detail = ref(null)
 const detailLoading = ref(false)
 const detailError = ref('')
-const teacherMode = ref(false)
+const user = ref(null)
+const teacherMode = computed(() => user.value?.role === 'TEACHER')
+const authMessage = ref('')
+let sessionEpoch = 0
+let coursesRequest = 0
 const editorOpen = ref(false)
 const editorInitial = ref(null)
 const editorVersion = ref(0)
@@ -33,7 +38,7 @@ let listRequest = 0
 let detailRequest = 0
 
 const visibleNotices = computed(() => notices.value.filter(item => item.type === category.value))
-function message(error) { return error.response?.data?.message || '请求失败，请确认后端已启动后重试。' }
+function message(error) { return error.response?.status === 403 ? '当前账号没有此操作权限。' : error.response?.data?.message || '请求失败，请确认后端已启动后重试。' }
 function clearDetail() {
   deleteConfirm.value = false
   deleteError.value = ''
@@ -44,19 +49,25 @@ function clearDetail() {
   detailLoading.value = false
 }
 async function loadCourses() {
+  if (!user.value) return
+  const epoch = sessionEpoch
+  const request = ++coursesRequest
   coursesLoading.value = true
   coursesError.value = ''
   try {
-    courses.value = (await api.get('/api/courses')).data
+    const response = await api.get('/api/courses')
+    if (epoch !== sessionEpoch || request !== coursesRequest) return
+    courses.value = response.data
     if (courses.value.length) selectCourse(courses.value[0])
     else { selectedCourse.value = null; notices.value = []; clearDetail() }
   } catch (error) {
-    coursesError.value = message(error)
+    if (epoch === sessionEpoch && request === coursesRequest) coursesError.value = message(error)
   } finally {
-    coursesLoading.value = false
+    if (epoch === sessionEpoch && request === coursesRequest) coursesLoading.value = false
   }
 }
 function selectCourse(course) {
+  if (!user.value) return
   cancelEditor()
   feedback.value = ''
   selectedCourse.value = course
@@ -65,23 +76,26 @@ function selectCourse(course) {
   loadNotices()
 }
 async function loadNotices() {
+  const epoch = sessionEpoch
   const currentRequest = ++listRequest
   clearDetail()
   notices.value = []
   noticesError.value = ''
-  if (!selectedCourse.value) return
+  if (!user.value || !selectedCourse.value) return
   noticesLoading.value = true
   try {
     const response = await api.get('/api/notices', { params: { courseId: selectedCourse.value.id, q: keyword.value.trim() } })
-    if (currentRequest === listRequest) notices.value = response.data
+    if (epoch === sessionEpoch && currentRequest === listRequest) notices.value = response.data
   } catch (error) {
-    if (currentRequest === listRequest) noticesError.value = message(error)
+    if (epoch === sessionEpoch && currentRequest === listRequest) noticesError.value = message(error)
   } finally {
-    if (currentRequest === listRequest) noticesLoading.value = false
+    if (epoch === sessionEpoch && currentRequest === listRequest) noticesLoading.value = false
   }
 }
 function selectCategory(value) { category.value = value; clearDetail() }
 async function loadDetail(notice) {
+  if (!user.value) return
+  const epoch = sessionEpoch
   deleteConfirm.value = false
   deleteError.value = ''
   const currentRequest = ++detailRequest
@@ -91,11 +105,11 @@ async function loadDetail(notice) {
   detailLoading.value = true
   try {
     const response = await api.get(`/api/notices/${notice.id}`)
-    if (currentRequest === detailRequest) detail.value = response.data
+    if (epoch === sessionEpoch && currentRequest === detailRequest) detail.value = response.data
   } catch (error) {
-    if (currentRequest === detailRequest) detailError.value = message(error)
+    if (epoch === sessionEpoch && currentRequest === detailRequest) detailError.value = message(error)
   } finally {
-    if (currentRequest === detailRequest) detailLoading.value = false
+    if (epoch === sessionEpoch && currentRequest === detailRequest) detailLoading.value = false
   }
 }
 function retryDetail() {
@@ -108,21 +122,16 @@ function cancelEditor() {
   savePending.value = false
   saveError.value = ''
 }
-function toggleTeacherMode() {
-  teacherMode.value = !teacherMode.value
-  cancelEditor()
-  deleteConfirm.value = false
-  deleteError.value = ''
-}
 function openEditor(notice = null) {
-  if (savePending.value) return
+  if (!teacherMode.value || savePending.value) return
   cancelEditor()
   editorInitial.value = notice
   editorOpen.value = true
   feedback.value = ''
 }
 async function saveNotice(values) {
-  if (savePending.value || !selectedCourse.value) return
+  if (!teacherMode.value || savePending.value || !selectedCourse.value) return
+  const epoch = sessionEpoch
   const version = editorVersion.value
   const courseId = selectedCourse.value.id
   const noticeId = editorInitial.value?.id
@@ -131,7 +140,7 @@ async function saveNotice(values) {
   try {
     const payload = { ...values, courseId }
     const response = noticeId ? await api.put(`/api/notices/${noticeId}`, payload) : await api.post('/api/notices', payload)
-    if (version !== editorVersion.value || selectedCourse.value?.id !== courseId) return
+    if (epoch !== sessionEpoch || version !== editorVersion.value || selectedCourse.value?.id !== courseId) return
     const savedNotice = response.data
     cancelEditor()
     keyword.value = ''
@@ -141,42 +150,72 @@ async function saveNotice(values) {
     const expectedListRequest = listRequest
     const expectedDetailRequest = detailRequest
     await refresh
-    if (selectedCourse.value?.id === courseId && listRequest === expectedListRequest && detailRequest === expectedDetailRequest) await loadDetail(savedNotice)
+    if (epoch === sessionEpoch && selectedCourse.value?.id === courseId && listRequest === expectedListRequest && detailRequest === expectedDetailRequest) await loadDetail(savedNotice)
   } catch (error) {
-    if (version === editorVersion.value) saveError.value = message(error)
+    if (epoch === sessionEpoch && version === editorVersion.value) saveError.value = message(error)
   } finally {
-    if (version === editorVersion.value) savePending.value = false
+    if (epoch === sessionEpoch && version === editorVersion.value) savePending.value = false
   }
 }
 async function deleteNotice() {
-  if (deletePending.value || !detail.value) return
+  if (!teacherMode.value || deletePending.value || !detail.value) return
+  const epoch = sessionEpoch
   const noticeId = detail.value.id
   const courseId = selectedCourse.value.id
   deletePending.value = true
   deleteError.value = ''
   try {
     await api.delete(`/api/notices/${noticeId}`)
-    if (selectedCourse.value?.id !== courseId) return
+    if (epoch !== sessionEpoch || selectedCourse.value?.id !== courseId) return
     if (editorInitial.value?.id === noticeId) cancelEditor()
     feedback.value = '内容已删除。'
     await loadNotices()
   } catch (error) {
-    if (selectedCourse.value?.id === courseId && detail.value?.id === noticeId) deleteError.value = message(error)
+    if (epoch === sessionEpoch && selectedCourse.value?.id === courseId && detail.value?.id === noticeId) deleteError.value = message(error)
   } finally {
-    deletePending.value = false
+    if (epoch === sessionEpoch) deletePending.value = false
   }
 }
-onMounted(loadCourses)
+function logout(reason = '') {
+  sessionEpoch++
+  coursesRequest++
+  listRequest++
+  setAuthToken('')
+  user.value = null
+  courses.value = []
+  selectedCourse.value = null
+  coursesLoading.value = false
+  coursesError.value = ''
+  notices.value = []
+  noticesLoading.value = false
+  noticesError.value = ''
+  keyword.value = ''
+  category.value = 'NOTICE'
+  feedback.value = ''
+  deletePending.value = false
+  cancelEditor()
+  clearDetail()
+  authMessage.value = reason
+}
+function authenticated(result) {
+  logout()
+  setAuthToken(result.token)
+  user.value = result.user
+  loadCourses()
+}
+onUnauthorized(() => logout('登录状态已失效，请重新登录。'))
 </script>
 
 <template>
   <div class="app-shell">
     <header class="page-header">
       <div><p class="eyebrow">个人项目 · 课程信息集中整理</p><h1>课程通知平台</h1></div>
-      <button class="secondary" :aria-pressed="teacherMode" @click="toggleTeacherMode">{{ teacherMode ? '返回学生浏览' : '教师维护（演示）' }}</button>
+      <div v-if="user" class="account-bar"><span class="student-label">{{ user.displayName }} · {{ teacherMode ? '教师' : '学生' }}</span><button class="secondary" @click="logout()">退出登录</button></div>
     </header>
     <p class="demo-banner">本机演示课程：软件项目实训的截止时间待老师通知；其他课程日期为演示示例，请以老师实际发布的信息为准。</p>
-    <p v-if="coursesLoading" role="status" class="state-panel">正在加载课程…</p>
+    <p v-if="authMessage" class="error" role="alert">{{ authMessage }}</p>
+    <LoginForm v-if="!user" @authenticated="authenticated" />
+    <p v-else-if="coursesLoading" role="status" class="state-panel">正在加载课程…</p>
     <div v-else-if="coursesError" class="state-panel error" role="alert">
       <p>{{ coursesError }}</p><button @click="loadCourses">重新加载课程</button>
     </div>
@@ -185,7 +224,7 @@ onMounted(loadCourses)
       <section class="course-content">
         <header class="course-heading"><h2>{{ selectedCourse?.name || '暂无课程' }}</h2><p class="muted">{{ selectedCourse?.description }}</p></header>
         <template v-if="selectedCourse">
-          <div v-if="teacherMode" class="maintenance-bar"><p class="muted small">当前为维护流程演示；账号权限将在实验四实现。</p><button :disabled="savePending" @click="openEditor()">新增通知或资料</button></div>
+          <div v-if="teacherMode" class="maintenance-bar"><p class="muted small">教师账号可维护内容；权限由后端检查。</p><button :disabled="savePending" @click="openEditor()">新增通知或资料</button></div>
           <p v-if="feedback" class="success" role="status">{{ feedback }}</p>
           <NoticeForm v-if="editorOpen && teacherMode" :key="editorVersion" :initial="editorInitial" :pending="savePending" :error="saveError" @save="saveNotice" @cancel="cancelEditor" />
           <div class="content-tools">
