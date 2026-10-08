@@ -25,7 +25,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/Start-Frontend.ps1
 
 本机数据库软件、数据、私有配置在 `.runtime`，已被 Git 忽略。ASCII 目录联接 `.local/campus-notice-runtime` 指向同一份本机文件，解决 Windows MySQL 对中文路径的兼容问题。
 
-页面地址为 `http://127.0.0.1:5173/`；前端单独运行，后端在8080。通知接口与错误格式见 `docs/openapi.yaml`。Windows 重新打包前先运行 `tools/Stop-Backend.ps1`，否则运行中的 JAR 会被占用。
+页面地址为 `http://127.0.0.1:5173/`；前端单独运行，后端在8080。通知接口与错误格式见 `docs/openapi.json`。Windows 重新打包前先运行 `tools/Stop-Backend.ps1`，否则运行中的 JAR 会被占用。
 
 ## 其他电脑配置
 
