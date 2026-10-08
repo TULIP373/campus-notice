@@ -1,0 +1,9 @@
+{
+  "merge_commit": "dec915d",
+  "cloud_ci": "未推送，未执行",
+  "local_frontend": "npm ci and npm run build pass",
+  "local_java": "14 tests pass; BUILD SUCCESS",
+  "remote_count": 0,
+  "commit": "9e2503029d16340ede94acad024c341e6198f71f",
+  "branch": "feature/commit-convention"
+}
