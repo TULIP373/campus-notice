@@ -43,3 +43,6 @@ frontend/dist/
 __pycache__/
 *.pyc
 .venv/
+
+# Office temporary lock files
+~$*.docx
