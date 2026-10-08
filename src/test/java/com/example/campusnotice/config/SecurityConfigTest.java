@@ -1,6 +1,7 @@
 package com.example.campusnotice.config;
 
 import java.time.Instant;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -45,8 +46,40 @@ class SecurityConfigTest {
         assertThrows(JwtException.class, () -> config.jwtDecoder(TEST_SECRET).decode(expired));
     }
 
+    @Test
+    void teacherRoleAndDatabasePermissionsBecomeAuthorities() {
+        Jwt jwt = Jwt.withTokenValue("unit-test-only-token").header("alg", "HS256")
+                .subject("teacher_test").claim("role", "TEACHER")
+                .claim("permissions", List.of("user:write", "notice:write"))
+                .issuedAt(Instant.now()).expiresAt(Instant.now().plusSeconds(300)).build();
+        var authentication = config.jwtAuthenticationConverter().convert(jwt);
+        assertNotNull(authentication);
+        var authorities = authentication.getAuthorities().stream().map(authority -> authority.getAuthority()).toList();
+        assertTrue(authorities.contains("ROLE_TEACHER"));
+        assertTrue(authorities.contains("user:write"));
+        assertTrue(authorities.contains("notice:write"));
+    }
+
+    @Test
+    void studentClaimsDoNotGainTeacherAuthorities() {
+        Jwt jwt = Jwt.withTokenValue("unit-test-only-token").header("alg", "HS256")
+                .subject("student_test").claim("role", "STUDENT")
+                .claim("permissions", List.of("course:read", "notice:read", "ask:use"))
+                .issuedAt(Instant.now()).expiresAt(Instant.now().plusSeconds(300)).build();
+        var authentication = config.jwtAuthenticationConverter().convert(jwt);
+        assertNotNull(authentication);
+        var authorities = authentication.getAuthorities().stream().map(authority -> authority.getAuthority()).toList();
+        assertTrue(authorities.contains("ROLE_STUDENT"));
+        assertFalse(authorities.contains("ROLE_TEACHER"));
+        assertTrue(authorities.contains("course:read"));
+        assertTrue(authorities.contains("notice:read"));
+        assertTrue(authorities.contains("ask:use"));
+        assertFalse(authorities.contains("user:write"));
+        assertFalse(authorities.contains("notice:write"));
+    }
+
     private String token(JwtEncoder encoder, Instant issuedAt, Instant expiresAt) {
-        JwtClaimsSet claims = JwtClaimsSet.builder().subject("test_subject")
+        JwtClaimsSet claims = JwtClaimsSet.builder().issuer("campus-notice").subject("test_subject")
                 .issuedAt(issuedAt).expiresAt(expiresAt).build();
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
         return encoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();

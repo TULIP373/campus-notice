@@ -3,6 +3,7 @@ package com.example.campusnotice;
 import com.example.campusnotice.mapper.UserMapper;
 import com.example.campusnotice.mapper.CourseMapper;
 import com.example.campusnotice.mapper.NoticeMapper;
+import com.example.campusnotice.mapper.PermissionMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -17,6 +18,8 @@ class CampusNoticeApplicationTests {
     CourseMapper courseMapper;
     @MockitoBean
     NoticeMapper noticeMapper;
+    @MockitoBean
+    PermissionMapper permissionMapper;
 
     @Test
     void contextLoads() {

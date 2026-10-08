@@ -82,7 +82,9 @@ python tools/check_api.py --stage final --model-unavailable
 
 ## 构建、数据库、UI 和交付检查
 
-**UNIT-SECURITY-01（AC-E4-01）：** 独立 JWT/登录单测只调用应用实际公开配置或服务入口，不能构造一套与应用无关的编码器后称为生产安全通过。针对同一 HS256 配置，正常签发应能解码；用错误密钥生成令牌必须被拒绝；签名正确但已过期的令牌必须被拒绝；实际签发令牌必须存在有限期 exp。Mockito 隔离用户/角色/权限读取，BCrypt 正确密码成功，错误密码和不存在账号均 401，不泄露原密码或哈希；教师和学生权限来自数据库关联查询，不能仅证明 JWT 包含文字角色。完整方法权限仍用 AUTH-01/STUDENT-WRITE-01 真 HTTP 状态复核。具体命令和测试类在公开接口确定后补充，尚未执行。
+**UNIT-SECURITY-01（AC-E4-01）：** 独立 JWT/登录单测只调用应用实际公开配置或服务入口，不能构造一套与应用无关的编码器后称为生产安全通过。`SecurityConfigTest` 五项：正常 HS256 解码、错误密钥拒绝、签名有效但过期拒绝、教师角色与数据库权限转换、学生不会获得教师或维护权限。权限测试使用公开数据库契约 `user:write/notice:write/course:read/notice:read/ask:use`。`JwtServiceTest` 检查应用实际签发可验证令牌，sub/issuer/role/permissions 正确、iat 至 exp 为 30 分钟且未包含密码/哈希。`AuthServiceTest` 三项使用真实 BCrypt、Mockito 隔离用户与角色权限读取：正确密码返回 token 且签发使用数据库角色权限，错误密码和不存在账号均 401 且不签发 token。完整方法权限仍用 AUTH-01/STUDENT-WRITE-01 真 HTTP 状态复核。
+
+提交后执行 `./mvnw.cmd -B -ntp "-Dtest=SecurityConfigTest,JwtServiceTest,AuthServiceTest" test`，预计新增 9 项，再执行全量 verify。`@MockitoBean PermissionMapper` 与公开测试占位密钥使上下文隔离本机 MySQL、私有密钥。尚未执行，不能预判通过。签名与 exp 校验依据 [Spring Security 官方 JWT 文档](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html)，实际断言针对本应用 Spring Boot 3 所带的生产配置。
 
 **UNIT-NOTICE-01（AC-E2-01、AC-E2-02）：** 独立 `NoticeServiceTest` 六项业务边界：未选择课程 400/不存在课程 404、非法类型 400、空白标题 400、超过 200 字搜索关键词 400、学习资料截止时间为 null 可正常保存读取、DELETE 影响零行返回 404。不强制 DELETE 之前先查询。Mock 只隔离数据库，真实 CourseService 参与课程校验；上下文测试用 `@MockitoBean CourseMapper/NoticeMapper` 提供依赖，仍不访问 MySQL。执行 `./mvnw.cmd -B -ntp "-Dtest=NoticeServiceTest" test`，提交后保留输出；接口、真实数据库、Axios 和浏览器截图仍需另验。
 

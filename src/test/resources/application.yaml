@@ -6,3 +6,7 @@ spring:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
       - org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration
 # 空项目上下文测试不连接本机开发库；真实 MySQL CRUD 由接口验收单独验证。
+app:
+  jwt:
+    # 公开的测试占位值，只隔离测试上下文；不得作为运行密钥。
+    secret: unit-test-only-signature-key-32-bytes-A!
