@@ -1,15 +1,11 @@
 """打包课程通知平台源码、运行说明和实验报告。"""
-import hashlib
-import json
 import os
 from pathlib import Path
 import subprocess
-import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT.parent / '202232110113余家祥_源代码.zip'
-PROOF = ROOT.parent / '开发记录_20261008/reports/2026-10-08/archive-check.json'
 
 def submission_file(name):
     """交付只包含运行、构建和阅读项目所需的文件。"""
@@ -25,12 +21,11 @@ def submission_file(name):
     if path.parts[0] == 'deliverables':
         return path.suffix == '.docx'
     if path.parts[0] == 'docs':
-        return name in {'docs/openapi.json', 'docs/index.md', 'docs/开发约定.md',
-                        'docs/提示词练习.md', 'docs/测试说明.md'}
+        return name in {'docs/openapi.json', 'docs/开发约定.md', 'docs/提示词练习.md'}
     if path.parts[0] == 'tools':
         return path.name.startswith(('Start-', 'Stop-', 'Init-')) or path.name in {
             'run.cmd', 'start.cmd', 'start-backend.cmd', 'start-frontend.cmd',
-            'start-model.cmd', 'stop.cmd', 'check_api.py', 'Build-Submission.py'}
+            'start-model.cmd', 'stop.cmd', 'Build-Submission.py'}
     return False
 
 
@@ -46,6 +41,7 @@ def private_values():
                         result.append(value.encode())
     accounts = ROOT / '.runtime/demo-accounts.json'
     if accounts.exists():
+        import json
         result.extend(item['password'].encode() for item in json.loads(accounts.read_text(encoding='utf-8-sig')).values())
     if os.environ.get('OPENAI_API_KEY'):
         result.append(os.environ['OPENAI_API_KEY'].encode())
@@ -83,33 +79,14 @@ def main():
                          '环境说明.md', 'config/database.example.properties', 'tools/Init-DemoAccounts.ps1',
                          'tools/start.cmd', 'tools/start-backend.cmd', 'tools/start-frontend.cmd', 'tools/stop.cmd',
                          'tools/Start-Demo.ps1', 'src/test/java/com/example/campusnotice/service/RagServiceTest.java',
-                         'docs/测试说明.md', 'deliverables/202232110113余家祥.docx']:
+                         'deliverables/202232110113余家祥.docx']:
             if 'campus-notice/' + required not in contents:
                 raise RuntimeError('缺少必要提交材料')
-        # 真正解包到新的任务私有目录，再核对内容，不覆盖现有文件。
-        extraction_parent = ROOT.parent / '开发记录_20261008' / 'archive-extracted'
-        extraction_parent.mkdir(parents=True, exist_ok=True)
-        extraction = Path(tempfile.mkdtemp(prefix='submission-', dir=extraction_parent))
-        for member in contents:
-            destination = (extraction / member).resolve()
-            if not destination.is_relative_to(extraction.resolve()):
-                raise RuntimeError('ZIP含越界路径')
-        archive.extractall(extraction)
         for name in files:
-            if (extraction / 'campus-notice' / name).read_bytes() != (ROOT / name).read_bytes():
+            if archive.read('campus-notice/' + name.replace('\\', '/')) != (ROOT / name).read_bytes():
                 raise RuntimeError('压缩后内容与源码不一致')
-    record = {'verified_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip(),
-              'output': OUTPUT.name, 'file_count': len(files), 'zip_integrity': 'PASS',
-              'decompressed_contents_match_sources': True, 'actual_private_values_absent': True,
-              'actual_extraction_performed': True,
-              'excluded': sorted(blocked), 'remote_push_executed': False, 'files': contents,
-              'packaging_scope': '源码、测试、SQL、配置示例、启动脚本、接口与运行说明、实验报告；内部开发和验收材料保留在本机及Git历史',
-              'internal_files_excluded': [name for name in tracked if not submission_file(name)],
-              'sha256': hashlib.sha256(OUTPUT.read_bytes()).hexdigest(),
-              'note': '已实际解包并逐文件核对；Git历史及完整开发验收记录保留在本机。'}
-    PROOF.parent.mkdir(parents=True, exist_ok=True)
-    PROOF.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding='utf-8')
-    print('ZIP内容及私有值排除检查通过；文件数：', len(files))
+    print('已生成：', OUTPUT)
+    print('文件数：', len(files))
 
 
 if __name__ == '__main__':

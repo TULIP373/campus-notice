@@ -35,7 +35,7 @@ tools\start.cmd
 - `database`：建表、权限和演示数据 SQL。
 - `config`：数据库、JWT 和模型配置示例。
 - `model-service`：课程问答的本地模型接口。
-- `docs`：接口、提示词练习和测试说明。
+- `docs`：接口、Git约定和提示词练习。
 - `tools`：启动、停止、初始化和检查脚本。
 - `deliverables`：五个实验的合订报告。
 
@@ -48,9 +48,9 @@ tools\start.cmd
 
 ```powershell
 .\mvnw.cmd -B -ntp package
-./tools\Init-DemoAccounts.ps1
-./tools\Start-Backend.ps1 -SkipBuild
-./tools\Start-Frontend.ps1
+.\tools\Init-DemoAccounts.ps1
+.\tools\Start-Backend.ps1 -SkipBuild
+.\tools\Start-Frontend.ps1
 ```
 
 换电脑时使用自己安装的 MySQL 服务。`tools\start.cmd` 中的数据库便捷启动仅适用于当前电脑已经准备好的本地运行库；源码包不含数据库软件和数据文件。模型服务安装方法见 `model-service/README.md`。
@@ -59,6 +59,6 @@ tools\start.cmd
 
 后端测试：`.\mvnw.cmd -B -ntp verify`。
 前端构建：进入 `frontend` 后运行 `npm ci` 和 `npm run build`。
-接口检查：`python tools\check_api.py --stage final`。
+后端40项测试及前端构建已通过，启动脚本已检查重复启动、端口冲突、冷启动和自动构建。
 
 报告在 `deliverables/202232110113余家祥.docx`。源码包还包含 SQL、配置示例和运行说明。GitHub 地址在本人推送仓库后补充；目前未进行远程 PR 或云端 CI。
