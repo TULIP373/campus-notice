@@ -161,7 +161,7 @@ class Builder:
                 fmt.space_after=Pt(3); fmt.line_spacing=1
             if name=='Report TOC':
                 fmt.space_before=Pt(12); fmt.space_after=Pt(12)
-                fmt.tab_stops.add_tab_stop(Cm(14.65),WD_TAB_ALIGNMENT.RIGHT,WD_TAB_LEADER.DOTS)
+                fmt.tab_stops.add_tab_stop(Cm(14.4),WD_TAB_ALIGNMENT.RIGHT,WD_TAB_LEADER.DOTS)
 
     def para(self, text, bold=False, code=False):
         if not code and text.startswith(('概要设计：','详细设计：','数据库设计：')):
@@ -312,7 +312,9 @@ def make(pages):
     overview.alignment=WD_ALIGN_PARAGRAPH.CENTER
     b.para('本报告记录从用户管理后端、Vue课程通知界面、Git协作到权限控制和课程资料问答的实现过程。运行结果对应本地新项目的真实日志与界面。演示课程资料用于功能验证，不代表教师发布的实际任务。')
     for i, title in enumerate(TITLES,1):
-        b.doc.add_paragraph(title+'\t'+str(pages.get('exp'+str(i),'待核对')),style='Report TOC')
+        p=b.doc.add_paragraph(title+'\t'+str(pages.get('exp'+str(i),'待核对')),style='Report TOC')
+        p.paragraph_format.space_before=Pt(12); p.paragraph_format.space_after=Pt(12)
+        p.paragraph_format.line_spacing=1.15
     b.para('每个实验依次包含项目介绍、相关开发技术、项目设计、关键代码、运行结果、心得六栏目。')
     for i, title in enumerate(TITLES,1):
         # Body experiments flow naturally; only the source cover/contents/body

@@ -1,0 +1,19 @@
+{
+  "result": "PASS",
+  "before_commit": "68d82374b4192aa6df6bf5d7154291cc825de75e",
+  "changed_png_pages": [
+    2
+  ],
+  "remaining_20_page_pngs_byte_identical": true,
+  "right_tab_stop_cm": 14.4,
+  "each_entry_explicit_spacing_before_after_pt": 12,
+  "toc_actual_page_map": [
+    3,
+    6,
+    10,
+    12,
+    16
+  ],
+  "root_viewed_before_and_after": true,
+  "independent_visual_review": "PENDING"
+}
