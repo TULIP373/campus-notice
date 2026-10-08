@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from sdk_adapter import BridgeError, ask, check_safety, clean_environment
 
 LIMIT = 32 * 1024
-TIMEOUT = 180
+TIMEOUT = 110  # Finish before Java's 120-second request and the page's 150-second timeout.
 BUSY = threading.Lock()
 SCRIPT = Path(__file__).resolve()
 
@@ -49,7 +49,7 @@ def run_worker(payload: dict) -> tuple[int, dict]:
         stdout, stderr = process.communicate(json.dumps(payload, ensure_ascii=False), timeout=TIMEOUT)
     except subprocess.TimeoutExpired:
         terminate_worker(process)
-        return 504, {"message": "模型请求超过 180 秒，已终止本次工作进程。"}
+        return 504, {"message": "模型请求超过 110 秒，已终止本次工作进程。"}
     # The worker emits only event type names to stderr, never backend exception text.
     if stderr:
         try:
