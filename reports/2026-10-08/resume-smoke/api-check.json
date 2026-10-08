@@ -1,0 +1,115 @@
+{
+  "generated_at": "2026-10-08T13:35:23+0800",
+  "base_url": "http://127.0.0.1:8080",
+  "stage": "final",
+  "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+  "implementation_dirty": false,
+  "current_run_passed": true,
+  "passed": true,
+  "tests": [
+    {
+      "test": "HEALTH-01",
+      "ac": [
+        "AC-E1-01"
+      ],
+      "group": "api",
+      "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+      "stage": "final",
+      "started_at": "2026-10-08T13:35:21+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "status": "UP"
+      },
+      "finished_at": "2026-10-08T13:35:21+0800"
+    },
+    {
+      "test": "CRUD-01",
+      "ac": [
+        "AC-E1-02"
+      ],
+      "group": "api",
+      "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+      "stage": "final",
+      "started_at": "2026-10-08T13:35:22+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "created_read_updated_deleted": true,
+        "chinese": true,
+        "duplicate_http": 409,
+        "invalid_http": 400,
+        "deleted_http": 404
+      },
+      "finished_at": "2026-10-08T13:35:23+0800"
+    },
+    {
+      "test": "COURSES-01",
+      "ac": [
+        "AC-E2-01"
+      ],
+      "group": "api",
+      "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+      "stage": "final",
+      "started_at": "2026-10-08T13:35:23+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "courses": [
+          {
+            "course_id": 1,
+            "rows": 2
+          },
+          {
+            "course_id": 2,
+            "rows": 3
+          },
+          {
+            "course_id": 3,
+            "rows": 2
+          }
+        ]
+      },
+      "finished_at": "2026-10-08T13:35:23+0800"
+    },
+    {
+      "test": "CORS-01",
+      "ac": [
+        "AC-E2-02"
+      ],
+      "group": "api",
+      "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+      "stage": "final",
+      "started_at": "2026-10-08T13:35:23+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "allowed_origin": "http://localhost:5173",
+        "other_origin_has_no_allow_header": true,
+        "denied_status": 403
+      },
+      "finished_at": "2026-10-08T13:35:23+0800"
+    },
+    {
+      "test": "NOTICES-01",
+      "ac": [
+        "AC-E2-01",
+        "AC-E2-02"
+      ],
+      "group": "api",
+      "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+      "stage": "final",
+      "started_at": "2026-10-08T13:35:23+0800",
+      "implementation_dirty": false,
+      "result": "PASS",
+      "details": {
+        "crud": true,
+        "keyword": true,
+        "invalid_rejected": true
+      },
+      "finished_at": "2026-10-08T13:35:23+0800"
+    }
+  ],
+  "sensitive_fields_logged": false,
+  "version_bound_passed": true
+}

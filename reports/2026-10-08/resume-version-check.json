@@ -1,0 +1,31 @@
+{
+  "verified_commit": "0a09dedf2683f2e88dcf575f96366c81c2e97f46",
+  "previous_evidence_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
+  "checked_at": "2026-10-08T13:36:31.287240+08:00",
+  "non_acceptance_artifact_changes_since_previous_evidence": [],
+  "application_tests_configuration_sql_report_unchanged": true,
+  "backend_build": "resume-backend-build.log",
+  "java_tests": 40,
+  "failures": 0,
+  "errors": 0,
+  "frontend_build": "resume-frontend-build.log",
+  "api_smoke": "resume-smoke/api-check.json",
+  "security_smoke": "resume-smoke/security-check.json",
+  "report_sha256": "c63b2250ac810f86f7505ad921286d547845bf6822ba075e7fc146eeee01cab3",
+  "report_pages_spot_checked": [
+    16,
+    18
+  ],
+  "all_pages_previous_check": "document-check.json",
+  "real_model_evidence": "model-check.json",
+  "real_sdk_evidence": "final-sdk-check.json",
+  "real_model_reexecuted_this_resume": false,
+  "model_bridge_health_is_not_model_validation": true,
+  "services_restarted_on_resume": [
+    3307,
+    8080,
+    5173,
+    8787
+  ],
+  "result": "PASS"
+}
