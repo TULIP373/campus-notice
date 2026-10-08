@@ -1,7 +1,7 @@
 {
   "report": "deliverables/202232110113余家祥.docx",
-  "sha256": "C63B2250AC810F86F7505AD921286D547845BF6822BA075E7FC146EEEE01CAB3",
-  "reviewed_at": "2026-10-08T12:43:57.5449225+08:00",
+  "sha256": "ed5c50eef8e9388936596bb09a4ca0723daa18c33e32ce70b127e433872237c0",
+  "reviewed_at": "2026-10-08T13:41:19.653961+08:00",
   "pages": 18,
   "all_pages_viewed": [
     1,
@@ -24,7 +24,7 @@
     18
   ],
   "result": "PASS",
-  "reviewer": "root directly viewed every latest 150-DPI page PNG",
+  "reviewer": "root: directly reviewed all 7 changed pages; remaining 11 PNGs byte-identical to previously reviewed full 18-page rendering",
   "identity": [
     "202232110113",
     "余家祥",
@@ -41,8 +41,30 @@
   },
   "template_geometry_equal": true,
   "template_preserve_parts_equal": true,
-  "observations": "每页检查中文字体、边界、表格、代码摘录和真实截图；修复孤立表头，实验四截图裁剪保持角色和课程完整；目录页码核对通过。GitHub由本人推送后填写，模板无教师栏。",
+  "observations": "Removed hard paragraph wrapping of code. All 79 code paragraphs match complete source lines. Word soft wrapping is visual only. Reviewed changed pages 4/6/11/15/16/17/18 individually in small batches: no clipping, overlap or missing text; 18 pages and original TOC map unchanged.",
   "render_method": "Word COM read-only PDF export and bundled pypdfium2; canonical bundled LibreOffice unavailable, fallback recorded",
-  "verified_commit": "373c8dba52ccfc417a635899992fe5f45d47addf",
-  "version_binding_basis": "Unchanged database/schema and DOCX since full checks; final API security checks confirm active database."
+  "version_binding_basis": "Pending report repair commit; only report generator and DOCX changed, application and tests unchanged.",
+  "code_excerpt_source_match": true,
+  "latest_changed_pages_viewed": [
+    4,
+    6,
+    11,
+    15,
+    16,
+    17,
+    18
+  ],
+  "pixel_identical_previously_reviewed_pages": [
+    1,
+    2,
+    3,
+    5,
+    7,
+    8,
+    9,
+    10,
+    12,
+    13,
+    14
+  ]
 }

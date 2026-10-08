@@ -1,7 +1,7 @@
 {
   "template_source": "docs\\report-template.docx",
   "template_sha256": "8b88124b5d66f0039b9d19deb07a22ca463b54fd284834de3a7fcafd18dd5483",
-  "report_sha256": "c63b2250ac810f86f7505ad921286d547845bf6822ba075e7fc146eeee01cab3",
+  "report_sha256": "ed5c50eef8e9388936596bb09a4ca0723daa18c33e32ce70b127e433872237c0",
   "template_unchanged": true,
   "preserve_only_parts": [
     "_rels/.rels",
@@ -30,7 +30,7 @@
     "word/media/image5.png",
     "word/footer1.xml"
   ],
-  "render_status": "PASS",
+  "render_status": "PENDING",
   "intentional_changes": [
     "身份填写",
     "五实验正文及真实截图",

@@ -143,10 +143,9 @@ class Builder:
         raw = textwrap.dedent(excerpt(path, start, end, count))
         displayed = []
         for line in raw.splitlines():
-            # Split only displayed excerpts, never mutate source files.
-            lines = textwrap.wrap(line, width=79, subsequent_indent='    ', replace_whitespace=False,
-                                  drop_whitespace=False) or ['']
-            for display in lines: displayed.append(self.para(display, code=True))
+            # Keep source lines intact; Word soft-wraps visually without inserting
+            # paragraph breaks inside identifiers or string literals.
+            displayed.append(self.para(line, code=True))
         for p in displayed[:-1]: p.paragraph_format.keep_with_next = True
 
     def table(self, headers, rows, widths):

@@ -1,0 +1,19 @@
+{
+  "checked_at": "2026-10-08T13:38:35.458586+08:00",
+  "verified_commit": "904a577d3cfe080d617e2ca5c9476c3563cc54eb",
+  "all_git_branches_history_scanned": true,
+  "blob_count": 369,
+  "byte_count": 13421197,
+  "actual_private_values_absent": true,
+  "private_values_written": false,
+  "encodings_checked": [
+    "UTF-8",
+    "UTF-16LE"
+  ],
+  "commit_count": 67,
+  "chinese_experiment_subject_count": 67,
+  "nonempty_nonmerge_commit_count": 66,
+  "remote_count": 0,
+  "remote_push_executed": false,
+  "result": "PASS"
+}
