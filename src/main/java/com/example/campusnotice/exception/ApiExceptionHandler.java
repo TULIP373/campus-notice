@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -40,6 +41,11 @@ public class ApiExceptionHandler {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Map<String, String>> method(HttpRequestMethodNotSupportedException exception) {
         return error(HttpStatus.METHOD_NOT_ALLOWED, "不支持该请求方法");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, String>> denied(AccessDeniedException exception) {
+        return error(HttpStatus.FORBIDDEN, "没有操作权限");
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
