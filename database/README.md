@@ -10,6 +10,8 @@
 4. 04-security.sql：roles、permissions、role_permissions；STUDENT/TEACHER权限映射和用户角色外键。
 5. 05-demo-update.sql：已有旧版演示数据时使用，将旧种子通知更新为当前内容，并补充新课程；不覆盖教师自行录入的通知。
 
+6. 06-demo-review-fix.sql：已有早期手工样例时使用，统一“作业1”的演示截止时间说明，并把旧通知中的仓库占位提示替换为实际地址。只匹配指定旧内容，重复执行不会改动其他通知。
+
 本机已执行过SQL，日常启动不重复导入。可以在Navicat打开各SQL按顺序执行；也可以在项目目录显式指定本地导入脚本：
 
 ```powershell

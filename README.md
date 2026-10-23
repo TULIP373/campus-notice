@@ -65,4 +65,6 @@ start.cmd
 前端构建：进入 `frontend` 后运行 `npm ci` 和 `npm run build`。
 后端测试与前端构建用于检查业务规则和页面构建；启动脚本支持重复启动检查、端口冲突提示和自动构建。
 
-报告在 `deliverables/202232110113余家祥.docx`。源码包还包含 SQL、配置示例和运行说明。GitHub 地址在本人推送仓库后补充；目前未进行远程 PR 或云端 CI。
+报告在 `deliverables/202232110113余家祥.docx`。源码包还包含 SQL、配置示例和运行说明。项目仓库：https://github.com/TULIP373/campus-notice。主分支为 `master`，保留原有分支和提交历史。2026年10月23日的 GitHub Actions 构建与测试已通过，记录见 https://github.com/TULIP373/campus-notice/actions/runs/39955158590 。本次未创建远程 PR。
+
+用户 CRUD、模型问答及演示数据修正记录见 `docs/报告核验记录_20261023.md`。已有旧版演示数据时，可按需执行 `database/06-demo-review-fix.sql`，该脚本只匹配并修正旧样例，不重建数据库。
